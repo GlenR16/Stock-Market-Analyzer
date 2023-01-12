@@ -1,0 +1,231 @@
+@font-face {
+    font-family: JetBrains;
+    src: url(./jetbrains.ttf);
+}
+::-webkit-scrollbar {
+    display: none;
+}
+:root {
+    --fg: aqua;
+    --bg: #202124;
+    --backdrop: rgba(0,0,0,0.5);
+    --theme: #0dff006a;
+}
+*{
+    font-family: 'JetBrains';
+    color: var(--fg);
+}
+
+body{
+    background: rgb(0,12,84);
+    background: linear-gradient(45deg, rgba(0,12,84,1) 0%, rgba(0,64,130,1) 50%, rgba(0,12,84,1) 100%);
+
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
+    margin:0px;
+    padding:0px;
+    overflow-x: hidden;
+    width: 100vw;
+
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+/* Global Navbar */
+nav{
+    display: inline-flex;
+    flex-direction: row;
+    width: 97%;
+    margin: 10px 0px;
+    padding: 0px;
+    justify-content: space-between;
+    align-items: center;
+    
+    background-color: var(--backdrop);
+    border-radius: 15px;
+}
+nav >a> img{
+    width: 100px;
+    padding: 0px 0px 0px 0px;
+}
+nav > .nav-btns{
+    display: flex;
+    align-items: center;
+    margin: 0px;
+    font-size: 25px;
+}
+nav > .nav-btns > a{
+    text-decoration: none;
+    color: var(--fg);
+    border: solid var(--fg) 3px;
+    font-size: 25px;
+    border-radius: 15px;
+    margin: 0px 10px;
+    padding: 8px;
+}
+nav > .nav-btns > form > input{
+    margin: 0px 10px;
+}
+nav > .nav-btns > a:hover{
+    color: var(--bg);
+    background-color: var(--fg);
+}
+/* Containers */
+.news{
+    background-color: var(--theme);
+    border-radius: 15px;
+    padding: 15px;
+    margin: 10px;
+}
+.index-body{
+    height: 98vh;
+}
+main{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    width: 97%;
+    flex-grow: 1;
+    margin: 10px 0px;
+    background-color: var(--backdrop);
+    border-radius: 15px;
+    padding: 0px;
+}
+/* Sub Containers */
+.heading{
+    font-size: 35px !important;
+    font-weight: 600;
+    margin: 0px;
+    border: 3px solid var(--fg);
+    border-radius: 15px;
+    margin: 15px;
+    padding: 15px;
+    text-align: center;
+}
+.content{
+    font-size: 25px;
+    margin: 15px;
+    padding: 15px;
+    text-align: center;
+}
+.row{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:space-evenly;
+    margin: 10px 0px;
+}
+.side{
+    width: 45vw;
+}
+/* Input Fields */
+input[type="submit"]{
+    background-color: transparent;
+    color: var(--fg);
+    border: solid 3px var(--fg);
+    border-radius: 15px;
+    font-size: 25px;
+    padding: 10px;
+    margin: 10px 0px 10px 10px;
+}
+input[type="submit"]:hover{
+    background-color: var(--fg);
+    color: var(--bg);
+}
+input[type="password"],input[type="email"],input[type="text"]{
+    background-color: transparent;
+    color: var(--fg);
+    border: solid 3px var(--fg);
+    border-radius: 15px;
+    font-size: 25px;
+    padding: 10px;
+    margin: 10px;
+    width: 80%;
+}
+input[type="password"]:focus,input[type="email"]:focus,input[type="text"]:focus{
+    outline: none !important;
+}
+select{
+    width: 75%;
+    background-color: transparent;
+    color: var(--fg);
+    border: 3px solid var(--fg);
+    border-radius: 15px;
+    font-size: 25px;
+    padding: 10px;
+    appearance: none;
+    background: url("../caret-down-solid.svg") no-repeat right 20px center / 25px, linear-gradient(to left, var(--fg) 65px, transparent 65px);
+    cursor: pointer;
+}
+select option {
+    color: inherit;
+    background-color: var(--bg);
+}
+select:focus {
+    outline: none;
+}
+select::-ms-expand {
+    display: none;
+}
+/* All Fontawesome icons */
+i{
+    color: var(--fg);
+}
+a:has(> i):hover > i{
+    color: var(--bg);
+}
+/* All Error Messages */
+.error{
+    color: var(--error);
+    font-size: 25px;
+    border-color: var(--error);
+}
+/* Responsive Navbar */
+nav .icon {
+    display: none;
+}
+/* Canvases */
+canvas#stockgraph{
+    height: 400px !important;
+    width: 600px !important;
+}
+@media screen and (max-width: 600px) {
+    .nav .btns *:not(:last-child) {
+        display: none;
+    }
+    .nav a.icon {
+        display: block;
+    }
+    .row{
+        flex-direction: column;
+    }
+    .extras{
+        flex-direction: column !important;
+    }
+    input[type="password"],input[type="email"],input[type="text"]{
+        width: 90%;
+        margin: 10px 0px;
+    }
+    .side{
+        width: 90%;
+    }
+}
+@media screen and (max-width: 600px) {
+    .nav.responsive {
+        flex-direction: column;
+        align-items:stretch;  
+    }
+    .nav.responsive .btns {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+    .nav.responsive .btns *{
+        display: block;
+    }
+    .nav.responsive .btns a{
+        margin: 10px 0px;
+    }
+}

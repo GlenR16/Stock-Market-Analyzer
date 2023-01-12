@@ -1,0 +1,41 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static '/css/base.css' %}">
+    <script src="https://kit.fontawesome.com/853e6dc438.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <title>Stock Market Analyzer</title>
+</head>
+<body class="index-body">
+  <nav>
+    <a href="">
+      <img src="{% static 'transparent.png' %}" alt="Stock Market Analyzer">
+    </a>
+    <div class="nav-btns">
+      <a href="aboutus/" class="nav-links">About Us</a>
+      <a href="login/" class="nav-links">Login</a>
+      <a href="home/" class="nav-links">Dashboard</a>
+    </div>
+  </nav>
+  <main>
+    <div class="row">
+      <div class="content side">
+          An app developed by students to predict the stock market with high accuracy. 
+          It uses sentiment analysis to identify the effect of new on stocks. <br>
+          Made using Django, ChartJS, Scapy, ML and <i class="fa-regular fa-heart base-icon fa-lg"></i>
+          <h2>Stock Market Analyzer</h2>
+      </div>
+      <div class="content side">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+  </main>
+</body>
+<script src="{%static '/js/jquery.min.js' %}"></script>
+<script src="{%static '/js/base.js' %}"></script>
+</html>

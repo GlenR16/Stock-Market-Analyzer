@@ -1,0 +1,42 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static 'css/base.css' %}">
+    <script src="https://kit.fontawesome.com/853e6dc438.js" crossorigin="anonymous"></script>
+    <script src="{%static 'js/jquery.min.js' %}"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+      <title>Login</title>
+  </head>
+  <body class="login-body">
+    <nav>
+      <a href="">
+        <img src="{% static 'transparent.png' %}" alt="Stock Market Analyzer">
+      </a>
+      <div class="nav-btns">
+        Don't have an account?
+        <a href="/signup" class="nav-links">Signup</a>
+      </div>
+    </nav>
+    <main>
+      <div class="heading">Login Here</div>
+      <div class="content">
+        <form id="form" action="" method="post">
+          {% csrf_token %}
+          <input type="email" class="inputs" id="email" name="email" placeholder="Email Address" required><br>
+          <input type="password" class="inputs" id="password" name="password" placeholder="Password" required><br>
+          <input type="submit" id="form1" class="login-btn" value="Login"><br>
+          {% if error%}
+          <div style="text-align: center;color: red;font-weight: 800;font-size: 25px;">Invalid Credentials</div>
+          {% endif %}
+        </form>
+
+      </div>
+    </main>
+    
+  </body>
+</html>
+

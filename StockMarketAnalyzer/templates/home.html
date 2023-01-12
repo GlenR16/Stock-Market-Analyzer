@@ -1,0 +1,61 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static '/css/base.css' %}">
+    <script src="{%static 'js/jquery.min.js' %}"></script>
+    <script src="https://kit.fontawesome.com/853e6dc438.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <title>Home Page</title>
+</head>
+<body class="home-body">
+    <nav>
+        <a href="..">
+          <img src="{% static 'transparent.png' %}" alt="Stock Market Analyzer">
+        </a>
+        <div class="nav-btns">
+            <form action="../" id="form1" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Logout">
+            </form>
+        </div>
+    </nav>
+
+    <main>
+        <div class="heading">Graph</div>
+        <div class="content">
+            <form id="form2" action="./" method="post">
+                {% csrf_token %}
+                <select  list="stocks" name="stockid" id="stocksearch" onchange="this.form.submit()">
+                    {% for stock in list %}
+                    <option value="{{stock.stock_id}}" {% if stock.stock_id == user.stock_id_1.stock_id %}selected{% endif %}>{{stock.stock_name}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <div style="display: flex;justify-content:center ;">
+                <canvas class="stockgraph" id="stockgraph"></canvas>
+            </div>
+        </div>
+    </main>
+    <main>
+        <div class="heading">News</div>
+        <div class="content">
+            {% if news %}
+            {% for news in news %}
+            <div class="news">
+                <h2>{{news.headline}}</h2>
+                {{news.news}} <br>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h2  style="text-align: center;color: red;font-weight: 800;font-size: 25px;">No News so far.</h2>
+            {% endif %}
+        </div>
+    </main>
+</body>
+<script src="{%static 'js/base.js' %}"></script>
+</html>
