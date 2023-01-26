@@ -56,7 +56,8 @@ nav > .nav-btns{
     margin: 0px;
     font-size: 25px;
 }
-nav > .nav-btns > a{
+nav > .nav-btns > a ,nav > .nav-btns > button{
+    background-color: transparent;
     text-decoration: none;
     color: var(--fg);
     border: solid var(--fg) 3px;
@@ -68,9 +69,12 @@ nav > .nav-btns > a{
 nav > .nav-btns > form > input{
     margin: 0px 10px;
 }
-nav > .nav-btns > a:hover{
+nav > .nav-btns > a:hover,nav > .nav-btns > button:hover{
     color: var(--bg);
     background-color: var(--fg);
+}
+nav > .nav-btns > button:hover > i{
+    color: var(--bg);
 }
 /* Containers */
 .news{
@@ -192,18 +196,18 @@ canvas#stockgraph{
     height: 400px !important;
     width: 600px !important;
 }
+nav .nav-btns *:last-child {
+    display: none;
+}
 @media screen and (max-width: 600px) {
-    .nav .btns *:not(:last-child) {
+    nav .nav-btns *:not(:last-child) {
         display: none;
     }
-    .nav a.icon {
+    nav .nav-btns *:last-child {
         display: block;
     }
     .row{
         flex-direction: column;
-    }
-    .extras{
-        flex-direction: column !important;
     }
     input[type="password"],input[type="email"],input[type="text"]{
         width: 90%;
@@ -212,20 +216,7 @@ canvas#stockgraph{
     .side{
         width: 90%;
     }
-}
-@media screen and (max-width: 600px) {
-    .nav.responsive {
-        flex-direction: column;
-        align-items:stretch;  
-    }
-    .nav.responsive .btns {
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    .nav.responsive .btns *{
-        display: block;
-    }
-    .nav.responsive .btns a{
-        margin: 10px 0px;
+    .index-body{
+        height: auto;
     }
 }

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import logging
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'home',
+    'AImodel',
 ]
 
 MIDDLEWARE = [
@@ -70,6 +72,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'StockMarketAnalyzer.wsgi.application'
 
+logging.disable(logging.CRITICAL)
+logging.disable(logging.WARNING)
+logging.disable(logging.DEBUG)
+logging.disable(logging.ERROR)
+logging.disable(logging.INFO)
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

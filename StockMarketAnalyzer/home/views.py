@@ -5,6 +5,7 @@ from django.core import serializers
 from .models import History, News, Stocks, Users
 
 def index(request):
+    print(list(Stocks.objects.all().values_list('stock_name', flat=True)))
     if request.method == 'POST':
         request.session.flush()
     return render(request,'index.html')
@@ -57,7 +58,6 @@ def home(request):
         stock_list = Stocks.objects.all()
         if request.method == 'POST':
             stockid = int(request.POST['stockid'])
-            print(request,stockid)
             if stockid!='' and type(stockid) == int:
                 try:
                     curr_user.stock_id_1 = stock_list[stockid-1]
