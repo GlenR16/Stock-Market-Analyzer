@@ -16,7 +16,10 @@ The database is on my computer only so it won't connect on your computer. \
 Admin User: **glenr** \
 Admin Password: **password123** \
 \
+New: \
+Added stock name to each moneycontrol scrape. \
+
 Work Remaining: \
-1.Get old stock data to display on the home screen graph. \
-2.Add news scraping into the project. \
-3.Add machine learning into the project. 
+1.Add stock name to economic times scrape. \
+2.Get historic data on stocks. Update db schemas. \
+3.Add machine learning into the project. \
