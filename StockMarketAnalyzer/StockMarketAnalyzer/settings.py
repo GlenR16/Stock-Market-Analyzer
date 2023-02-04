@@ -38,8 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_cron',
     'home',
-    'AImodel',
 ]
 
 MIDDLEWARE = [
@@ -72,11 +72,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'StockMarketAnalyzer.wsgi.application'
 
-logging.disable(logging.CRITICAL)
-logging.disable(logging.WARNING)
-logging.disable(logging.DEBUG)
-logging.disable(logging.ERROR)
-logging.disable(logging.INFO)
+CRON_CLASSES = [
+    "home.cron.ScrapeNews",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

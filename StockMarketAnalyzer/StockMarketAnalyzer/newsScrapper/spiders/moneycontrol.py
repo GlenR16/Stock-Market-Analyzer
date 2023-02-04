@@ -1,11 +1,10 @@
-import logging
 import scrapy
 import re
 from scrapy.selector import Selector
 from bs4 import BeautifulSoup
 from StockMarketAnalyzer.newsScrapper.items import MCNewsItem
 from StockMarketAnalyzer.newsScrapper.utils.utils import get_stock_id
-
+from home.models import New,Stock
 CONT_DIV = (
     '//*[@id="mc_mainWrapper"]/div[2]/div[2]/div[3]/div[2]/div[2]/div/div[3]/div[1]/div[not(@id="common_ge_widget_pricechart_news")]'
 )
@@ -24,14 +23,12 @@ def remove_ascii(text):
 
 def get_urls():
     """Get urls for scraping."""
-    stocks = ["Reliance", "TCS", "HDFC Bank", "HUL", "Infosys", "ICICI Bank", "SBI", "Bharti Airtel", "Bajaj Finance", "HDFC", "ITC", "LIC India", "Adani Enterpris", "Kotak Mahindra", "Adani Total Gas", "Adani Trans", "Adani Green Ene", "Asian Paints", "Avenue Supermar", "Bajaj Finserv", "HCL Tech", "Larsen", "Maruti Suzuki", "Axis Bank", "Sun Pharma", "Titan Company", "Wipro", "Nestle", "UltraTechCement", "Adani Ports", "ONGC", "NTPC", "JSW Steel", "M&M", "Power Grid Corp", "Coal India", "Adani Power", "Pidilite Ind", "Tata Motors", "Tata Steel", "Hind Zinc", "SBI Life Insura", "HDFC Life", "Grasim", "Vedanta", "Bajaj Auto", "Ambuja Cements", "Tech Mahindra", "Siemens", "Eicher Motors", "IOC", "Dabur India",
-              "Divis Labs", "IndusInd Bank", "Britannia", "Hindalco", "DLF", "Cipla", "Adani Wilmar", "Godrej Consumer", "SBI Card", "L&T Infotech", "Hindustan Aeron", "Havells India", "Shree Cements", "Bajaj Holdings", "Bharat Elec", "SRF", "ICICI Prudentia", "Dr Reddys Labs", "TATA Cons. Prod", "ABB India", "Varun Beverages", "Tata Power", "Bank of Baroda", "Interglobe Avi", "Marico", "BPCL", "Apollo Hospital", "United Spirits", "Berger Paints", "Chola Invest.", "IRCTC", "FSN E-Co Nykaa", "Page Industries", "GAIL", "ICICI Lombard", "Mindtree", "Torrent Pharma", "JSW Energy", "Zomato", "Tata Elxsi", "Schaeffler Ind", "Tube Investment", "TVS Motor", "Hero Motocorp", "INDUS TOWERS", "Patanjali Foods", "UPL", "Trent"]
+    stocks = [st.stock_name for st in Stock.objects.all() ]
     # stocks = ["Reliance", "TCS", "HDFC Bank", "HUL"]
-    stock_ids = [get_stock_id(stock) for stock in stocks]
-    print(stock_ids)
+    stock_ids_dict = { k:v for (k,v) in zip(stocks, [get_stock_id(stock) for stock in stocks])}
     urls = [
-        f"https://www.moneycontrol.com/stocks/company_info/stock_news.php?sc_id={stock_id}&durationType=M&duration=1"
-        for stock_id in stock_ids
+        f"https://www.moneycontrol.com/stocks/company_info/stock_news.php?sc_id={stock_ids_dict[stock_id]}&durationType=M&duration=1"
+        for stock_id in stock_ids_dict
     ]
     return urls
 
@@ -52,7 +49,9 @@ class NewsSpider(scrapy.Spider):
     start_urls = get_urls()
 
     def parse(self, response):
+        rel_stock = re.search('\?sc_id=(.*)\&durationType=', response.url).group(1)
         news_cont = Selector(text=response.body).xpath(CONT_DIV).getall()
+        print("news_cont---->",news_cont)
         for news in news_cont:
             title = Selector(text=news).xpath(TITLE).get()
             link = (
@@ -69,6 +68,7 @@ class NewsSpider(scrapy.Spider):
                 link,
                 callback=self.extract_article,
                 meta={
+                    "stock":rel_stock,
                     "title": title,
                     "link": link,
                     "time": time,
@@ -95,4 +95,6 @@ class NewsSpider(scrapy.Spider):
         news["description"] = remove_ascii(desc)
         news["article"] = remove_ascii(data)
         if(desc != None and data != ""):
+            newwws = New(headline= news["title"],news =news["article"],stock = Stock.objects.get(stock_name=response.meta.get("stock")) )
+            newwws.save()
             yield news

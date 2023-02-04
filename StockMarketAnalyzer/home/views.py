@@ -1,11 +1,16 @@
+
+
+import subprocess
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 import re
 from django.core import serializers
-from .models import History, News, Stocks, Users
+from .models import History, New, Stock, User
+
+# subprocess.call(["python manage.py scrape]"],shell=True)
 
 def index(request):
-    print(list(Stocks.objects.all().values_list('stock_name', flat=True)))
+    print(list(Stock.objects.all().values_list('stock_name', flat=True)))
     if request.method == 'POST':
         request.session.flush()
     return render(request,'index.html')
@@ -17,8 +22,8 @@ def signup(request):
         email = request.POST['email']
         username = request.POST['username']
         password = request.POST['password']
-        if (email!='' and username!='' and password!='' and re.fullmatch(emailre, email) and not Users.objects.filter(email=email)):
-            new_user = Users(email=email,name=username,password=password)
+        if (email!='' and username!='' and password!='' and re.fullmatch(emailre, email) and not User.objects.filter(email=email)):
+            new_user = User(email=email,name=username,password=password)
             new_user.save()
             request.session['email'] = new_user.email
             return redirect(home)
@@ -36,7 +41,7 @@ def login(request):
         email = request.POST['email']
         password = request.POST['password']
         try:
-            curr_user = Users.objects.get(email=email)
+            curr_user = User.objects.get(email=email)
         except:
             curr_user = ''
         if (curr_user!='' and password==curr_user.password):
@@ -54,8 +59,8 @@ def login(request):
 def home(request):
     session = session_verification(request)
     if session!='':
-        curr_user = Users.objects.get(email=session)
-        stock_list = Stocks.objects.all()
+        curr_user = User.objects.get(email=session)
+        stock_list = Stock.objects.all()
         if request.method == 'POST':
             stockid = int(request.POST['stockid'])
             if stockid!='' and type(stockid) == int:
@@ -66,8 +71,8 @@ def home(request):
                     print("Error for: ",stockid,e)
             return HttpResponseRedirect('/home/')
         try:
-            curr_stock = Stocks.objects.get(stock_id=curr_user.stock_id_1.stock_id)
-            curr_news = News.objects.filter(stock_idn=curr_stock.stock_id)
+            curr_stock = Stock.objects.get(stock_id=curr_user.stock_id_1.stock_id)
+            curr_news = New.objects.filter(stock_idn=curr_stock.stock_id)
             history = History.objects.filter(stock_idh=curr_stock.stock_id)
             return render(request,"home.html",{'user':curr_user,'stock':curr_stock,'news':curr_news,'history':history,'list':stock_list})
         except:
@@ -88,10 +93,11 @@ def aboutus(request):
 def api(request):
     session = session_verification(request)
     if session!='':
-        curr_user = Users.objects.get(email=session)
-        curr_stock = Stocks.objects.all().get(stock_id=curr_user.stock_id_1.stock_id)
+        curr_user = User.objects.get(email=session)
+        curr_stock = Stock.objects.all().get(stock_id=curr_user.stock_id_1.stock_id)
         history = History.objects.filter(stock_idh=curr_stock.stock_id)
         data =  serializers.serialize('json',[curr_stock])+serializers.serialize('json', history)
         return HttpResponse(data, content_type="json")
     else:
         return HttpResponse("User not logged in.")
+

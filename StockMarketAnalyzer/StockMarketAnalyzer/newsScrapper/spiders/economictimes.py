@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import scrapy
 from scrapy.selector import Selector
 from StockMarketAnalyzer.newsScrapper.items import NewsItem
+from home.models import New
 
 
 # Constant XPaths
@@ -78,4 +79,7 @@ class NewsSpider(scrapy.Spider):
         news["date"]=response.meta.get("date")
         news["summary"]=response.meta.get("summary")
         news["article"]=data
+
+        newwws = New(headline= news["title"],news =news["article"] )
+        newwws.save()
         yield news
