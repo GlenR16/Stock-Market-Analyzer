@@ -6,10 +6,10 @@
     display: none;
 }
 :root {
-    --fg: aqua;
-    --bg: #202124;
-    --backdrop: rgba(0,0,0,0.5);
-    --theme: #0dff006a;
+    --fg: #BBE1FA;
+    --bg: #1B262C;
+    --backdrop: rgba(15, 76, 117,0.4);
+    --theme: rgba(50, 130, 184,0.2);
 }
 *{
     font-family: 'JetBrains';
@@ -17,9 +17,9 @@
 }
 
 body{
-    background: rgb(0,12,84);
-    background: linear-gradient(45deg, rgba(0,12,84,1) 0%, rgba(0,64,130,1) 50%, rgba(0,12,84,1) 100%);
-
+    /* background: rgb(0,12,84);
+    background: linear-gradient(45deg, rgba(0,12,84,1) 0%, rgba(0,64,130,1) 50%, rgba(0,12,84,1) 100%); */
+    background-color: var(--bg);
     background-repeat: no-repeat;
     background-attachment: fixed;
     

@@ -108,7 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+logging.getLogger('scrapy').setLevel(logging.CRITICAL)
+logging.getLogger('scrapy').propagate = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/

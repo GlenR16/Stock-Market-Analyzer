@@ -80,6 +80,6 @@ class NewsSpider(scrapy.Spider):
         news["summary"]=response.meta.get("summary")
         news["article"]=data
 
-        newwws = New(headline= news["title"],news =news["article"] )
-        newwws.save()
+        # newwws = New(headline= news["title"],news =news["article"] )
+        # newwws.save()
         yield news

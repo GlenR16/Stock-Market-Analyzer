@@ -5,12 +5,9 @@ from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 import re
 from django.core import serializers
-from .models import History, New, Stock, User
-
-# subprocess.call(["python manage.py scrape]"],shell=True)
+from .models import Data, New, Stock, User
 
 def index(request):
-    print(list(Stock.objects.all().values_list('stock_name', flat=True)))
     if request.method == 'POST':
         request.session.flush()
     return render(request,'index.html')
@@ -65,15 +62,15 @@ def home(request):
             stockid = int(request.POST['stockid'])
             if stockid!='' and type(stockid) == int:
                 try:
-                    curr_user.stock_id_1 = stock_list[stockid-1]
+                    curr_user.stock = stock_list[stockid-1]
                     curr_user.save()
                 except Exception as e:
                     print("Error for: ",stockid,e)
             return HttpResponseRedirect('/home/')
         try:
-            curr_stock = Stock.objects.get(stock_id=curr_user.stock_id_1.stock_id)
-            curr_news = New.objects.filter(stock_idn=curr_stock.stock_id)
-            history = History.objects.filter(stock_idh=curr_stock.stock_id)
+            curr_stock = Stock.objects.get(sid=curr_user.stock.sid)
+            curr_news = New.objects.filter(stock=curr_stock)
+            history = Data.objects.filter(stock=curr_stock)
             return render(request,"home.html",{'user':curr_user,'stock':curr_stock,'news':curr_news,'history':history,'list':stock_list})
         except:
             return render(request,"home.html",{'user':curr_user,'list':stock_list})
@@ -94,8 +91,8 @@ def api(request):
     session = session_verification(request)
     if session!='':
         curr_user = User.objects.get(email=session)
-        curr_stock = Stock.objects.all().get(stock_id=curr_user.stock_id_1.stock_id)
-        history = History.objects.filter(stock_idh=curr_stock.stock_id)
+        curr_stock = Stock.objects.all().get(sid=curr_user.stock.sid)
+        history = Data.objects.filter(stock=curr_stock.sid)
         data =  serializers.serialize('json',[curr_stock])+serializers.serialize('json', history)
         return HttpResponse(data, content_type="json")
     else:

@@ -6,7 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
-
+import logging
 BOT_NAME = "newsScrapper"
 
 SPIDER_MODULES = ["newsScrapper.spiders"]
@@ -18,7 +18,8 @@ NEWSPIDER_MODULE = "newsScrapper.spiders"
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
-
+logging.getLogger('scrapy').setLevel(logging.CRITICAL)
+logging.getLogger('scrapy').propagate = False
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 CONCURRENT_REQUESTS = 32
 

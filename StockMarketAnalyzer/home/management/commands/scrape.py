@@ -12,14 +12,25 @@ class Command(BaseCommand):
         process.crawl(et)
         process.start()
     
-def get_stock_data(stock_name):
-    data = yf.Ticker(stock_name)
-    df = data.history(period='1mo')
-    cols = list(df.columns)
-    if 'Dividends' in cols:
-        df = df.drop('Dividends', axis=1)
-    if 'Stock Splits' in cols:
-        df = df.drop('Stock Splits', axis=1)
-    df.reset_index(drop=True, inplace=True)
-    return df    
 
+
+def getdata(stock_name):
+        data = yf.Ticker(stock_name)
+        df = data.history(period='1mo')
+        cols = list(df.columns)
+        if 'Dividends' in cols:
+            df = df.drop('Dividends', axis=1)
+        if 'Stock Splits' in cols:
+            df = df.drop('Stock Splits', axis=1)
+        if 'High' in cols:
+            df = df.drop('High', axis=1)
+        if 'Low' in cols:
+            df = df.drop('Low', axis=1)
+        if 'Volume' in cols:
+            df = df.drop('Volume', axis=1)
+        df.reset_index(drop=True, inplace=True)
+        #stockobj = Stock.objects.get(stock_name=stock_name)
+        #today = date.today()
+        #newhistory = History(stock=stockobj,open=df['Open'][i],close=df['Close'][i],date=today-timedelta(days = i+2))
+        #newhistory.save()
+        return None

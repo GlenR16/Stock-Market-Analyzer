@@ -32,7 +32,7 @@
                 {% csrf_token %}
                 <select  list="stocks" name="stockid" id="stocksearch" onchange="this.form.submit()">
                     {% for stock in list %}
-                    <option value="{{stock.stock_id}}" {% if stock.stock_id == user.stock_id_1.stock_id %}selected{% endif %}>{{stock.stock_name}}</option>
+                    <option value="{{stock.sid}}" {% if stock.sid == user.stock.sid %}selected{% endif %}>{{stock.name}}</option>
                     {% endfor %}
                 </select>
             </form>

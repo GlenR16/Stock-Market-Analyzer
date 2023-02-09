@@ -23,7 +23,7 @@ def remove_ascii(text):
 
 def get_urls():
     """Get urls for scraping."""
-    stocks = [st.stock_name for st in Stock.objects.all() ]
+    stocks = [st.code for st in Stock.objects.all() ]
     # stocks = ["Reliance", "TCS", "HDFC Bank", "HUL"]
     stock_ids_dict = { k:v for (k,v) in zip(stocks, [get_stock_id(stock) for stock in stocks])}
     urls = [
@@ -95,6 +95,6 @@ class NewsSpider(scrapy.Spider):
         news["description"] = remove_ascii(desc)
         news["article"] = remove_ascii(data)
         if(desc != None and data != ""):
-            newwws = New(headline= news["title"],news =news["article"],stock = Stock.objects.get(stock_name=response.meta.get("stock")) )
+            newwws = New(headline= news["title"],news =news["article"],stock = Stock.objects.get(code=response.meta.get("stock")) )
             newwws.save()
             yield news
