@@ -29,6 +29,7 @@ def getdata(stock_name):
         if 'Volume' in cols:
             df = df.drop('Volume', axis=1)
         df.reset_index(drop=True, inplace=True)
+        print(df)
         #stockobj = Stock.objects.get(stock_name=stock_name)
         #today = date.today()
         #newhistory = History(stock=stockobj,open=df['Open'][i],close=df['Close'][i],date=today-timedelta(days = i+2))

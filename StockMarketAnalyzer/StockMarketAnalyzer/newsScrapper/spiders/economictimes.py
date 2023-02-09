@@ -20,6 +20,7 @@ NSE_INDICATORS = "//a[contains(@class, 'neg') or contains(@class, 'pos')]"
 
 def get_urls():
     # res = requests.get("").json()
+    
     res = list(range(10))
     urls = [
         f"https://economictimes.indiatimes.com/stocksupdate_news/companyid-{stock_id}.cms"

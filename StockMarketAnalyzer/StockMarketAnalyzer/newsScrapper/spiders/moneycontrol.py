@@ -24,8 +24,8 @@ def remove_ascii(text):
 def get_urls():
     """Get urls for scraping."""
     stocks = [st.code for st in Stock.objects.all() ]
-    # stocks = ["Reliance", "TCS", "HDFC Bank", "HUL"]
     stock_ids_dict = { k:v for (k,v) in zip(stocks, [get_stock_id(stock) for stock in stocks])}
+    print("aaaaaa",stock_ids_dict)
     urls = [
         f"https://www.moneycontrol.com/stocks/company_info/stock_news.php?sc_id={stock_ids_dict[stock_id]}&durationType=M&duration=1"
         for stock_id in stock_ids_dict
@@ -51,7 +51,6 @@ class NewsSpider(scrapy.Spider):
     def parse(self, response):
         rel_stock = re.search('\?sc_id=(.*)\&durationType=', response.url).group(1)
         news_cont = Selector(text=response.body).xpath(CONT_DIV).getall()
-        print("news_cont---->",news_cont)
         for news in news_cont:
             title = Selector(text=news).xpath(TITLE).get()
             link = (
