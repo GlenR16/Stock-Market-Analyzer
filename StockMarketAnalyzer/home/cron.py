@@ -4,37 +4,52 @@ from StockMarketAnalyzer.newsScrapper.spiders.moneycontrol import NewsSpider as 
 from StockMarketAnalyzer.newsScrapper.spiders.economictimes import NewsSpider as et
 import yfinance as yf
 from home.models import Data,Stock,New
-from datetime import date
 from datetime import timedelta
 
+import re
+from nltk.stem.porter import *
+from sklearn.feature_extraction.text import CountVectorizer
+from keras.preprocessing.text import Tokenizer
+from keras_preprocessing.sequence import pad_sequences
+from keras.models import load_model
+from django.db.models import Avg
+
+stopwords_list = ['i','me','my','myself','we','our','ours','ourselves','you',"you're","you've","you'll","you'd",'your','yours','yourself','yourselves','he','him','his','himself','she',"she's",'her','hers','herself','it',"it's",'its','itself','they','them','their','theirs','themselves','what','which','who','whom','this','that',"that'll",'these','those','am','is','are','was','were','be','been','being','have','has','had','having','do','does','did','doing','a','an','the','and','but','if','or','because','as','until','while','of','at','by','for','with','about','against','between','into','through','during','before','after','above','below','to','from','up','down','in','out','on','off','over','under','again','further','then','once','here','there','when','where','why','how','all','any','both','each','few','more','most','other','some','such','no','nor','not','only','own','same','so','than','too','very','s','t','can','will','just','don',"don't",'should',"should've",'now','d','ll','m','o','re','ve','y','ain','aren',"aren't",'couldn',"couldn't",'didn',"didn't",'doesn',"doesn't",'hadn',"hadn't",'hasn',"hasn't",'haven',"haven't",'isn',"isn't",'ma','mightn',"mightn't",'mustn',"mustn't",'needn',"needn't",'shan',"shan't",'shouldn',"shouldn't",'wasn',"wasn't",'weren',"weren't",'won',"won't",'wouldn',"wouldn't"] 
+
+
 class ScrapeNews(CronJobBase):
+    model = load_model("./home/aiml/sentiment")
     RUN_EVERY_MINS = 1 
     RETRY_AFTER_FAILURE_MINS = 1
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS, retry_after_failure_mins=RETRY_AFTER_FAILURE_MINS)
     code = 'home.cron.ScrapeNews'  
 
     def do(self):
-        print("Deleting old data -->")
+        print("Deleting old News and Data.")
         New.objects.all().delete()
         Data.objects.all().delete()
-        print("Getting News -->")
+        print("Getting News (6 Months).")
         process = CrawlerProcess()
         process.crawl(mc)
         process.crawl(et)
         process.start()
-        print("Getting Stock Data -->")
+        print("Getting Stock Data (6 Months).")
         for i in Stock.objects.all():
             self.getdata(i.code)
-        #model called
-        #gets sentiment average
-        #nerual network predict
-        #SAve to history db
+        print("Predicting sentiment.")
+        for i in New.objects.all():
+            i.sentiment=self.predict_sentiment(i.news)
+            i.save()
+        print("Getting averages.")
+        for i in Stock.objects.all():
+            average = New.objects.filter(stock=i).aggregate(Avg("sentiment"))
+            print(i.name,"->",average)
 
 
 
     def getdata(self,code):
         data = yf.Ticker(code)
-        df = data.history(period='1mo')
+        df = data.history(period='6mo')
         cols = list(df.columns)
         if 'Dividends' in cols:
             df = df.drop('Dividends', axis=1)
@@ -46,11 +61,36 @@ class ScrapeNews(CronJobBase):
             df = df.drop('Low', axis=1)
         if 'Volume' in cols:
             df = df.drop('Volume', axis=1)
-        df.reset_index(drop=True, inplace=True)
         stockobj = Stock.objects.get(code=code)
-        today = date.today()
         for i in df.index:
-            #Handle saturdays sundays
-            newdata = Data(stock=stockobj,open=df['Open'][i],close=df['Close'][i],date=today-timedelta(days = 21-i+1))
+            newdata = Data(stock=stockobj,open=df['Open'][i],close=df['Close'][i],date=i+timedelta(days = 1))
             newdata.save()
         return None
+    
+    def predict_sentiment(self,article):
+        vocab_size=10000
+        def article_to_words(article):
+            article = article[0].lower()
+            article=re.sub("r[^a-zA-Z0-9]", " ", article)
+            words = article.split()
+            words=[x for x in words if x not in stopwords_list]
+            words = [PorterStemmer().stem(x) for x in words]
+            return words
+        count_vector = CountVectorizer(max_features=vocab_size,preprocessor=lambda x:x,tokenizer=lambda x:x)
+        check_string = [article]
+        check_string = article_to_words(check_string)
+        test_string = count_vector.fit_transform(check_string).toarray()
+        max_words = 5000
+        max_len = 500
+
+        def tokenize_pad_sequences(text):
+            tokenizer = Tokenizer(num_words=max_words,lower=True,split=' ')
+            tokenizer.fit_on_texts(text)
+            x = tokenizer.texts_to_sequences(text)
+            x = pad_sequences(x, padding='post', maxlen=max_len)
+            return x, tokenizer
+
+        x, tokenizer = tokenize_pad_sequences(check_string)
+        #### MODEL #### ONLY CHANGE NAME IN FUTURE
+        prediction = self.model.predict(x)
+        return prediction[0][0]

@@ -108,9 +108,16 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Setting loggers to CRITICAL only.
+logging.getLogger('urllib3').setLevel(logging.CRITICAL)
+logging.getLogger('urllib3').propagate = False
 logging.getLogger('scrapy').setLevel(logging.CRITICAL)
 logging.getLogger('scrapy').propagate = False
-
+logging.getLogger('filelock').setLevel(logging.CRITICAL)
+logging.getLogger('filelock').propagate = False
+logging.getLogger('tensorflow').setLevel(logging.CRITICAL)
+logging.getLogger('tensorflow').propagate = False
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 

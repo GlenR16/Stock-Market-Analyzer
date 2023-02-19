@@ -4,7 +4,7 @@ import datetime
 class Stock(models.Model):
     sid = models.AutoField(primary_key = True,editable = False)
     name = models.CharField(max_length=63)
-    code = models.CharField(unique=True,max_length=10)
+    code = models.CharField(unique=True,max_length=20)
     def __str__(self) -> str:
         return f"{self.name}"
 
@@ -28,5 +28,5 @@ class New(models.Model):
 class Data(models.Model):
     date = models.DateField()
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
-    open = models.FloatField(default=0)
+    open = models.FloatField(default=0,blank=True,null=True)
     close = models.FloatField(default=0)

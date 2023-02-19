@@ -2,7 +2,7 @@
 import json
 import requests
 from bs4 import BeautifulSoup
-
+import re
 
 GET_STOCK_ID_URL = "https://www.moneycontrol.com/mccode/common/autosuggestion_solr.php"
 GET_ET_CODE_URL = "https://economictimes.indiatimes.com/stocksearch.cms"
@@ -30,11 +30,15 @@ def get_et_code(name):
     Function to extract Economic Times id for stock name.
     """
     res = requests.get(
-        url=GET_ET_CODE_URL
+        url=GET_ET_CODE_URL,
         params={
             "ticker": name
         },
         timeout=5,     
     )
     soup = BeautifulSoup(res.content, "html.parser")
-    return soup.a.get("data-compid")
+    try:
+        response = soup.li.a.get("data-compid")
+    except:
+        response = None
+    return response

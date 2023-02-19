@@ -1,9 +1,10 @@
 from bs4 import BeautifulSoup
 import scrapy
+from StockMarketAnalyzer.newsScrapper.utils.utils import get_et_code
 from scrapy.selector import Selector
 from StockMarketAnalyzer.newsScrapper.items import NewsItem
-from home.models import New
-
+from home.models import New,Stock
+import re 
 
 # Constant XPaths
 #    Story XPaths
@@ -18,13 +19,15 @@ ARTICLEDIV = "//div/div[1]/div[3]/div/article/div[contains(@class, 'artText')]"
 NSE_INDICATORS = "//a[contains(@class, 'neg') or contains(@class, 'pos')]"
 
 
+stock_ids_dict = { }
+
 def get_urls():
-    # res = requests.get("").json()
-    
-    res = list(range(10))
+    stocks = Stock.objects.all() #List of stocks
+    global stock_ids_dict
+    stock_ids_dict = {v:k.code for (k,v) in zip(stocks, [get_et_code(stock.code.split(".")[0]) for stock in stocks])}
     urls = [
         f"https://economictimes.indiatimes.com/stocksupdate_news/companyid-{stock_id}.cms"
-        for stock_id in res
+        for stock_id in stock_ids_dict
     ]
     return urls
 
@@ -44,7 +47,9 @@ class NewsSpider(scrapy.Spider):
     allowed_domains = ["economictimes.indiatimes.com"]
     start_urls = get_urls()
 
+
     def parse(self, response):
+        rel_stock = stock_ids_dict[re.search('/companyid-(.*)\.cms', response.url).group(1)]
         stories = Selector(text=response.body).xpath(STORY).getall()
         if stories == None or stories == "":
             yield {"Not connected"}
@@ -60,6 +65,7 @@ class NewsSpider(scrapy.Spider):
                 link,
                 callback=self.extract_article,
                 meta={
+                    "stock":rel_stock,
                     "title": title,
                     "link": link,
                     "type": type,
@@ -80,7 +86,6 @@ class NewsSpider(scrapy.Spider):
         news["date"]=response.meta.get("date")
         news["summary"]=response.meta.get("summary")
         news["article"]=data
-
-        # newwws = New(headline= news["title"],news =news["article"] )
-        # newwws.save()
+        newwws = New(headline= news["title"],news =news["article"],stock = Stock.objects.get(code=response.meta.get("stock")))
+        newwws.save()
         yield news

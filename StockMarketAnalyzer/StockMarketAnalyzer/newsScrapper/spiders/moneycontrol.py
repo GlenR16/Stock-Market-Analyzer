@@ -20,15 +20,15 @@ def remove_ascii(text):
     text = text.encode("ascii", "ignore")
     return text.decode()
 
-
+stock_ids_dict = { }
 def get_urls():
     """Get urls for scraping."""
-    stocks = [st.code for st in Stock.objects.all() ]
-    stock_ids_dict = { k:v for (k,v) in zip(stocks, [get_stock_id(stock) for stock in stocks])}
-    print("aaaaaa",stock_ids_dict)
+    stocks = [get_stock_id(st.code.split(".")[0]) for st in Stock.objects.all() ]
+    global stock_ids_dict
+    stock_ids_dict = {k:v for (k,v) in zip(stocks, [stock.code for stock in Stock.objects.all()])}
     urls = [
-        f"https://www.moneycontrol.com/stocks/company_info/stock_news.php?sc_id={stock_ids_dict[stock_id]}&durationType=M&duration=1"
-        for stock_id in stock_ids_dict
+        f"https://www.moneycontrol.com/stocks/company_info/stock_news.php?sc_id={stock_id}&durationType=M&duration=6"
+        for stock_id in stocks
     ]
     return urls
 
@@ -49,7 +49,7 @@ class NewsSpider(scrapy.Spider):
     start_urls = get_urls()
 
     def parse(self, response):
-        rel_stock = re.search('\?sc_id=(.*)\&durationType=', response.url).group(1)
+        rel_stock = stock_ids_dict[re.search('\?sc_id=(.*)\&durationType=', response.url).group(1)]
         news_cont = Selector(text=response.body).xpath(CONT_DIV).getall()
         for news in news_cont:
             title = Selector(text=news).xpath(TITLE).get()
