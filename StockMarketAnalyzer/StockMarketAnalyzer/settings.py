@@ -80,13 +80,13 @@ CRON_CLASSES = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': 'stockmarket', 
-       'USER': 'root', 
-       'PASSWORD': 'pgadmin',
-       'HOST': '127.0.0.1', 
-       'PORT': '3000',
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'stockmarket',
+       'USER': 'djangouser',
+       'PASSWORD': 'pgadmin5',
+       'HOST': '127.0.0.1',
+       'PORT': '5432',
    }
 }
 

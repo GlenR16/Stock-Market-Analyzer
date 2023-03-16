@@ -22,6 +22,8 @@ class New(models.Model):
     headline = models.CharField(max_length=255,blank=True)
     news = models.TextField()
     sentiment = models.FloatField(blank=True,null=True)
+    date = models.DateField()
+    
     def __str__(self) -> str:
         return f"{self.headline}"
     

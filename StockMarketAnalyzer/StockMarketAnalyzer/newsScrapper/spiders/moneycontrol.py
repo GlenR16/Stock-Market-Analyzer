@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 from StockMarketAnalyzer.newsScrapper.items import MCNewsItem
 from StockMarketAnalyzer.newsScrapper.utils.utils import get_stock_id
 from home.models import New,Stock
+from datetime import datetime
+
 CONT_DIV = (
     '//*[@id="mc_mainWrapper"]/div[2]/div[2]/div[3]/div[2]/div[2]/div/div[3]/div[1]/div[not(@id="common_ge_widget_pricechart_news")]'
 )
@@ -89,11 +91,12 @@ class NewsSpider(scrapy.Spider):
         news["title"] = remove_ascii(response.meta.get("title"))
         news["url"] = response.meta.get("link")
         news["id"] = id
-        news["date"] = response.meta.get("date")
+        news["date"] = datetime.strptime(response.meta.get("date"), "%d %b %Y")
+        realDate = news["date"].strftime("%Y-%m-%d")
         news["time"] = response.meta.get("time")
         news["description"] = remove_ascii(desc)
         news["article"] = remove_ascii(data)
         if(desc != None and data != ""):
-            newwws = New(headline= news["title"],news =news["article"],stock = Stock.objects.get(code=response.meta.get("stock")) )
+            newwws = New(headline= news["title"],news =news["article"],date=realDate,stock = Stock.objects.get(code=response.meta.get("stock")) )
             newwws.save()
             yield news

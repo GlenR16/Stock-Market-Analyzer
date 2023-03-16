@@ -5,6 +5,7 @@ from scrapy.selector import Selector
 from StockMarketAnalyzer.newsScrapper.items import NewsItem
 from home.models import New,Stock
 import re 
+from datetime import datetime
 
 # Constant XPaths
 #    Story XPaths
@@ -83,9 +84,10 @@ class NewsSpider(scrapy.Spider):
         news["title"]=response.meta.get("title")
         news["url"]=response.meta.get("link")
         news["type"]=response.meta.get("type")
-        news["date"]=response.meta.get("date")
+        news["date"] = datetime.strptime(response.meta.get("date").split(",")[0], "%d %b %Y")
+        realDate = news["date"].strftime("%Y-%m-%d")
         news["summary"]=response.meta.get("summary")
         news["article"]=data
-        newwws = New(headline= news["title"],news =news["article"],stock = Stock.objects.get(code=response.meta.get("stock")))
+        newwws = New(headline= news["title"],news =news["article"],date=realDate,stock = Stock.objects.get(code=response.meta.get("stock")))
         newwws.save()
         yield news
