@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Signup
+{% endblock title %}
+{% block content %}
+<main>
+  <div class="heading">Create an account</div>
+  <div class="content">
+    <form id="form" action="" method="post">
+      {% csrf_token %}
+        {{form}} <br>
+        <input type="submit" id="form1" class="login-btn" value="Signup">
+      
+    </form>
+  </div>
+</main>
+{% endblock content %}

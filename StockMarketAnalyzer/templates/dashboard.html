@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Dashboard
+{% endblock title %}
+{% block content %}
+<main>
+        <div class="heading">Graph</div>
+        <div class="content">
+            {% comment %} <form id="form2" action="./" method="post">
+                {% csrf_token %}
+                <select  list="stocks" name="stockid" id="stocksearch" onchange="this.form.submit()">
+                    {% for stock in list %}
+                    <option value="{{stock.sid}}" {% if stock.sid == user.stock.sid %}selected{% endif %}>{{stock.name}}</option>
+                    {% endfor %}
+                </select>
+            </form> {% endcomment %}
+            <div style="display: flex;justify-content:center ;">
+                {{chart | safe}}
+            </div>
+        </div>
+    </main>
+    <main>
+        <div class="heading">News</div>
+        <div class="content">
+            {% if news %}
+            {% for new in news %}
+            <div class="news">
+                <h2>{{new.headline}}</h2>
+                {{new.news}} <br>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h2  style="text-align: center;color: red;font-weight: 800;font-size: 25px;">No News so far.</h2>
+            {% endif %}
+        </div>
+    </main>
+{% endblock content %}

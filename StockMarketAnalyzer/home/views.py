@@ -1,91 +1,120 @@
-
-
-import subprocess
 from django.shortcuts import render,redirect
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 import re
-from django.core import serializers
 from .models import Data, New, Stock, User
+import plotly.express as px
+from django.views.generic.base import TemplateView,RedirectView,View
+from .forms import UserCreationForm,UserLoginForm,PasswordChangeForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework import generics
+from django.contrib.auth import login,logout,authenticate,update_session_auth_hash
+import feedparser
+from pandas import json_normalize
+import pandas as pd
+import requests
 
-def index(request):
-    if request.method == 'POST':
-        request.session.flush()
-    return render(request,'index.html')
+FaviconView = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
-emailre = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+class IndexView(TemplateView):
+    template_name = "index.html"
 
-def signup(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        username = request.POST['username']
-        password = request.POST['password']
-        if (email!='' and username!='' and password!='' and re.fullmatch(emailre, email) and not User.objects.filter(email=email)):
-            new_user = User(email=email,name=username,password=password)
-            new_user.save()
-            request.session['email'] = new_user.email
-            return redirect(home)
+class LogoutView(RedirectView):
+    permanent = True
+    pattern_name = 'login'
+
+    def get_redirect_url(self, *args, **kwargs):
+        logout(self.request)
+        return super().get_redirect_url(*args, **kwargs)
+
+
+class SignupView(TemplateView):
+    template_name = "authentication/signup.html"
+
+    def post(self, request, *args, **kwargs):
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request,user)
+            return redirect("/dashboard")
         else:
-            return render(request,'signup.html',{'error':True})
-    else:
-        session = session_verification(request)
-        if session!='':
-            return redirect(home)
-        else:
-            return render(request,'signup.html')
+            return self.render_to_response({"form":form})
 
-def login(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        password = request.POST['password']
-        try:
-            curr_user = User.objects.get(email=email)
-        except:
-            curr_user = ''
-        if (curr_user!='' and password==curr_user.password):
-            request.session['email'] = curr_user.email
-            return redirect(home)
-        else:
-            return render(request,'login.html',{'error':True})
-    else:
-        session = session_verification(request)
-        if session!='':
-            return redirect(home)
-        else:
-            return render(request,'login.html')
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("/dashboard/")
+        return super().get(request, *args, **kwargs)
 
-def home(request):
-    session = session_verification(request)
-    if session!='':
-        curr_user = User.objects.get(email=session)
-        stock_list = Stock.objects.all()
-        if request.method == 'POST':
-            stockid = int(request.POST['stockid'])
-            if stockid!='' and type(stockid) == int:
-                try:
-                    curr_user.stock = stock_list[stockid-1]
-                    curr_user.save()
-                except Exception as e:
-                    print("Error for: ",stockid,e)
-            return HttpResponseRedirect('/home/')
-        try:
-            curr_stock = Stock.objects.get(sid=curr_user.stock.sid)
-            curr_news = New.objects.filter(stock=curr_stock)
-            history = Data.objects.filter(stock=curr_stock)
-            return render(request,"home.html",{'user':curr_user,'stock':curr_stock,'news':curr_news,'history':history,'list':stock_list})
-        except:
-            return render(request,"home.html",{'user':curr_user,'list':stock_list})
-    else:
-        return redirect(login)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = UserCreationForm()
+        return context
+
+class LoginView(TemplateView):
+    template_name = "authentication/login.html"
+
+    def post(self, request, *args, **kwargs):
+            form = UserLoginForm(data=request.POST)
+            if form.is_valid():
+                user = authenticate(request,email=request.POST.get("username",""),password=request.POST.get("password",""))
+                login(request,user)
+                return redirect("/dashboard/")
+            else:
+                return self.render_to_response({"form":form})
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("/dashboard/")
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = UserLoginForm()
+        return context
+
+class PasswordChangeView(LoginRequiredMixin,TemplateView):
+    template_name = "authentication/passwordchange.html"
+    login_url = '/login'
+    redirect_field_name = 'redirect_to'
+
+    def post(self, request, *args, **kwargs):
+        form = PasswordChangeForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request,user)
+            return render(request,"authentication/passworddone.html")
+        else:
+            return self.render_to_response({"form":form})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = PasswordChangeForm(self.request.user)
+        return context
+
+class DashboardView(LoginRequiredMixin,TemplateView):
+    template_name = "dashboard.html"
+
+    login_url = '/login'
+    redirect_field_name = 'redirect_to'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = Data.objects.filter(stock__name="TCS")
+        graph = px.line(x=[i.date for i in data],y=[i.open for i in data],title="TCS",labels={'x':'Date','y':'Opening'})
+        graph.update_layout(title={'font_size':22,'xanchor':'center','x':0.5})
+        context["chart"] = graph.to_html()
+        return context
+
+class RssView(View):
     
-def session_verification(request):
-    try:
-        session = request.session['email']
-    except:
-        session = ''
-    return session
+    def get(self, request, *args, **kwargs):
+        mc_rss = feedparser.parse("https://www.moneycontrol.com/rss/latestnews.xml")
+        it_rss = feedparser.parse("https://cfo.economictimes.indiatimes.com/rss/topstories")
+        ndtv_rss = feedparser.parse("https://feeds.feedburner.com/ndtvnews-latest")
+        return JsonResponse(data={"moneycontrol":mc_rss.entries,"indiatimes":it_rss.entries,"ndtv":ndtv_rss.entries})
 
-def aboutus(request):
-    return render(request,"aboutus.html")
+class AboutUsView(TemplateView):
+    template_name = "aboutus.html"
+
 
 def api(request):
     session = session_verification(request)

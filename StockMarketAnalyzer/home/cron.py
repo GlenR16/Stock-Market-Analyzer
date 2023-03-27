@@ -4,7 +4,7 @@ from StockMarketAnalyzer.newsScrapper.spiders.moneycontrol import NewsSpider as 
 from StockMarketAnalyzer.newsScrapper.spiders.economictimes import NewsSpider as et
 import yfinance as yf
 from home.models import Data,Stock,New
-from datetime import timedelta
+from datetime import timedelta,datetime
 import numpy as np
 import re
 from nltk.stem.porter import *
@@ -41,10 +41,15 @@ class ScrapeNews(CronJobBase):
         for i in New.objects.all():
             i.sentiment=self.predict_sentiment([i.news])
             i.save()
-        print("Getting averages.")
+        print("Training Model.")
         for i in Stock.objects.all():
-            average = New.objects.filter(stock=i).aggregate(Avg("sentiment"))
-            print(i.name,"->",average)
+            pass
+        print("Predicting stock prices.")
+        for i in Stock.objects.all():
+            inputData = 0
+            if New.objects.filter(stock=i,date__gte=datetime.now().date() - timedelta(days=14)).count() != 0:
+                inputData = New.objects.filter(stock=i,date=New.objects.filter(stock=i,date__gte=datetime.now().date() - timedelta(days=14)).order_by("-date").first().date).aggregate(Avg("sentiment"))
+            print("Final for",i," : ",inputData)
         print("Exporting Data.")
         with open('./home/aiml/export/sentiments.csv', 'w', newline='') as csvfile:
             writer = csv.writer(csvfile, delimiter=',')

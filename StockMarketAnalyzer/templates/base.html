@@ -1,0 +1,37 @@
+{%load static%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{%static '/css/base.css' %}">
+    <script src="https://kit.fontawesome.com/853e6dc438.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body class="">
+  <nav>
+    <a href="">
+      <img src="{% static 'transparent.png' %}" alt="Stock Market Analyzer">
+    </a>
+    <div class="nav-btns">
+        <a href="/aboutus/" class="nav-links">About Us</a>
+        {% if request.user.is_authenticated %}
+            <a href="/dashboard/" class="nav-links">Dashboard</a>
+            <a href="/logout/" class="nav-links">Logout</a>
+        {% else %}
+            <a href="/login/" class="nav-links">Login</a>
+            <a href="/signup/" class="nav-links">Signup</a>
+        {% endif %}
+        <button><i class="fa-solid fa-bars"></i></button>
+    </div>
+
+  </nav>
+  {% block content %}
+  {% endblock content %}
+</body>
+<script src="{%static '/js/jquery.min.js' %}"></script>
+<script src="{%static '/js/base.js' %}"></script>
+</html>

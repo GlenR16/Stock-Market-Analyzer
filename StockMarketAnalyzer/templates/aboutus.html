@@ -1,41 +1,20 @@
-{%load static%}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{%static '/css/base.css' %}">
-    <script src="{%static 'js/jquery.min.js' %}"></script>
-    <script src="https://kit.fontawesome.com/853e6dc438.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
-    <title>About Us</title>
-</head>
-<body class="home-body">
-    <nav>
-        <a href="">
-          <img src="{% static 'transparent.png' %}" alt="Stock Market Analyzer">
-        </a>
-        <div class="nav-btns">
-          <a href=".." class="nav-links">Home</a>
-        </div>
-      </nav>
-    <main>
-        <div class="heading">
-            Welcome
-        </div>
-        <div class="content">
-            We are the students of Fr.Conceicao Rodrigues college of Engineering. <br><br>
-            Team Members: <br>
-            1.Shubham Ojha <br>
-            2.Glen Rodrigues <br>
-            3.Glenn Mendonca <br>
-            4.Divyansh Dalmia <br>
-        </div>
-        
-        
-    </main>
-</body>
-<script src="{%static 'js/base.js' %}"></script>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+About Us
+{% endblock title %}
+{% block content %}
+  <main>
+    <div class="heading">
+        Welcome
+    </div>
+    <div class="content">
+        We are the students of Fr.Conceicao Rodrigues college of Engineering. <br><br>
+        Team Members: <br>
+        1.Shubham Ojha <br>
+        2.Glen Rodrigues <br>
+        3.Glenn Mendonca <br>
+        4.Divyansh Dalmia <br>
+    </div>
+  </main>
+{% endblock content %}
