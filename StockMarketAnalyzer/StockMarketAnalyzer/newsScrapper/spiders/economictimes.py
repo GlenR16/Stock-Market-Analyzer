@@ -79,6 +79,7 @@ class NewsSpider(scrapy.Spider):
         html=scrapy.Selector(text=response.body).xpath(ARTICLEDIV).get()
         if html is None:
             return
+        id = response.url.split("/")[-1].split(".")[0]
         data=text_from_html(html)
         news=NewsItem()
         news["title"]=response.meta.get("title")
