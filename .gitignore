@@ -1,2 +1,5 @@
-env1
-env2
+__pycache__/
+*.pyc
+venv/
+logs/
+docker/

@@ -21,56 +21,60 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@4x6qr&27^z0%zl!!gkl8svxxa(=zq6=e8vw*&ny4tdn%bify#'
+SECRET_KEY = "django-insecure-@4x6qr&27^z0%zl!!gkl8svxxa(=zq6=e8vw*&ny4tdn%bify#"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.29.142', 'localhost', '127.0.0.1',]
+ALLOWED_HOSTS = [
+    "192.168.29.142",
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_cron',
-    'home',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "django_cron",
+    "home",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'StockMarketAnalyzer.urls'
+ROOT_URLCONF = "StockMarketAnalyzer.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR/'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'StockMarketAnalyzer.wsgi.application'
+WSGI_APPLICATION = "StockMarketAnalyzer.wsgi.application"
 
 CRON_CLASSES = [
     "home.cron.ScrapeNews",
@@ -80,14 +84,14 @@ CRON_CLASSES = [
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.postgresql',
-       'NAME': 'stockmarket',
-       'USER': 'djangouser',
-       'PASSWORD': 'pgadmin5',
-       'HOST': '127.0.0.1',
-       'PORT': '5432',
-   }
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "stockmarket",
+        "USER": "djangouser",
+        "PASSWORD": "pgadmin5",
+        "HOST": "127.0.0.1",
+        "PORT": "5432",
+    }
 }
 
 
@@ -96,34 +100,34 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 # Setting loggers to CRITICAL only.
-logging.getLogger('urllib3').setLevel(logging.CRITICAL)
-logging.getLogger('urllib3').propagate = False
-logging.getLogger('scrapy').setLevel(logging.CRITICAL)
-logging.getLogger('scrapy').propagate = False
-logging.getLogger('filelock').setLevel(logging.CRITICAL)
-logging.getLogger('filelock').propagate = False
-logging.getLogger('tensorflow').setLevel(logging.CRITICAL)
-logging.getLogger('tensorflow').propagate = False
+logging.getLogger("urllib3").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3").propagate = False
+logging.getLogger("scrapy").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy").propagate = False
+logging.getLogger("filelock").setLevel(logging.CRITICAL)
+logging.getLogger("filelock").propagate = False
+logging.getLogger("tensorflow").setLevel(logging.CRITICAL)
+logging.getLogger("tensorflow").propagate = False
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -133,9 +137,11 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR/'static'
-STATICFILES_DIRS = ['StockMarketAnalyzer/static',]
+STATIC_URL = "static/"
+STATIC_ROOT = BASE_DIR / "static"
+STATICFILES_DIRS = [
+    "StockMarketAnalyzer/static",
+]
 AUTH_USER_MODEL = "home.User"
 LOGIN_REDIRECT_URL = "/dashboard"
 LOGOUT_REDIRECT_URL = "/login"
@@ -144,4 +150,4 @@ LOGOUT_REDIRECT_URL = "/login"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

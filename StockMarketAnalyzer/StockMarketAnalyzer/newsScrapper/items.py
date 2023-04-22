@@ -18,3 +18,13 @@ class MCNewsItem(scrapy.Item):
     time = scrapy.Field()
     description = scrapy.Field()
     article = scrapy.Field()
+
+
+class LiveMintNewsItem(scrapy.Item):
+    title = scrapy.Field()
+    url = scrapy.Field()
+    id = scrapy.Field()
+    date = scrapy.Field()
+    time = scrapy.Field()
+    article = scrapy.Field()
+    description = scrapy.Field()
