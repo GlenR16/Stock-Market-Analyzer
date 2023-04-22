@@ -2,6 +2,7 @@ import datetime
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin
 from .managers import UserManager
+from django.contrib.postgres.fields import ArrayField
 
 class Stock(models.Model):
     sid = models.AutoField(primary_key = True,editable = False)
@@ -42,3 +43,13 @@ class Data(models.Model):
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     open = models.FloatField(default=0,blank=True,null=True)
     close = models.FloatField(default=0)
+    high = models.FloatField(default=0,blank=True,null=True)
+    low = models.FloatField(default=0,blank=True,null=True)
+    volume = models.FloatField(default=0,blank=True,null=True)
+
+
+class Output(models.Model):
+    date = models.DateField(auto_now_add=True)
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    sentiment_model = ArrayField(models.FloatField(blank=True,null=True),size=5)
+    historical_model = ArrayField(models.FloatField(blank=True,null=True),size=5)

@@ -5,7 +5,7 @@ from .models import User,Stock,New,Data
 
 @admin.register(New)
 class NewAdmin(admin.ModelAdmin):
-    list_display = ("headline","sentiment","stock")
+    list_display = ("headline","sentiment","stock","date")
     list_filter = ("stock",)
 
 @admin.register(Stock)
@@ -18,5 +18,5 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Data)
 class DataAdmin(admin.ModelAdmin):
-    list_display = ("stock","date","open","close")
+    list_display = ("stock","date","open","close","high","low","volume")
     list_filter = ("stock",)

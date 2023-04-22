@@ -10,11 +10,16 @@ Dev Dashboard
             <h1 class="text-center">
                 {{request.user.name}} <br>
             </h1>
-            <div id="searchBox">
-                <input type="text" name="search" id="search" class="form-control m-0" placeholder="Search Stocks" onblur="this.value='';" onkeypress="search(this.value);">
-                <div class="m-0 p-0 text-center" id="liveSearch">
-                    
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <button class="btn btn-outline-info" type="button" onclick="editStock();">Add/Remove</button>
                 </div>
+                <select class="custom-select" id="searchStock">
+                    <option selected hidden disabled value="null">Add/Remove Stock</option>
+                    {% for i in stocks %}
+                        <option value="{{i.sid}}">{{i.name}}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
     </section>
@@ -27,29 +32,14 @@ Dev Dashboard
     </div>
 </section>
 <script>
-    let domparse = new DOMParser();
-    function search(stock){
-        fetch("/search?q="+stock)
-        .then((res)=> res.json())
-        .then((data) => {
-            document.getElementById("liveSearch").innerHTML = "";
-            data.forEach(stock => {
-                document.getElementById("liveSearch").innerHTML  += `<div class="m-2 p-0 d-flex flex-row align-items-center">
-                        <p class="m-0 p-0">${stock.name}</p> 
-                        <button type="button" id="${stock.sid}" onclick="addStock(this.id);" class="btn btn-sm btn-outline-success mx-2">+</button></div>`;
-            });
-            
-        })
-        .catch((error) => console.log(error))
-    }
-    function addStock(id){
-        fetch("/addStock/"+id+"/")
+    function editStock(){
+        fetch("/editStock/"+document.getElementById("searchStock").value+"/")
         .then((res) => res.json())
         .then((data) => {
             location.reload();
         })
         .catch((error) => {
-            console.log(error);
+            console.log("Invalid data sent.");
         });
     }
 </script>

@@ -85,11 +85,13 @@ class DashboardView(LoginRequiredMixin,TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["stocks"] = Stock.objects.all()
         out = []
         for stock in self.request.user.stocks.all():
             data = Data.objects.filter(stock__name=stock.name)
+            print(data)
             if data.count() != 0:
-                graph = px.line(x=[i.date for i in data],y=[i.open for i in data],title=stock.name,labels={'x':'Date','y':'Opening'})
+                graph = px.line(x=[i.date for i in data],y=[i.open for i in data],title=stock.name,labels={'x':'Date','y':'Opening'},markers=True)
                 graph.update_layout(title={'font_size':22,'xanchor':'center','x':0.5})
                 out.append(graph.to_html())
         context["charts"] = out
@@ -106,21 +108,13 @@ class RssView(View):
 class AboutUsView(TemplateView):
     template_name = "aboutus.html"
 
-class SearchView(APIView):
-
-    def get(self, request, *args, **kwargs):
-        
-        stocks = Stock.objects.filter(name__contains=request.GET.get("q",""))
-        test = stocks.exclude(sid__in=[i.sid for i in request.user.stocks])
-        output = StockSerializer(stocks,many=True).data
-        return Response(output)
-
-class AddStockView(APIView):
+class EditStockView(APIView):
 
     def get(self,request , *args, **kwargs):
         stock = get_object_or_404(Stock,sid=kwargs.get("id",""))
-        try:
+        if stock in request.user.stocks.all():
+            request.user.stocks.remove(stock)
+            return Response({"success":True})
+        else:
             request.user.stocks.add(stock)
             return Response({"success":True})
-        except Exception as e:
-            return Response({"error":e},status=500)
