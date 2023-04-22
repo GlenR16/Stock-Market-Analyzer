@@ -2,17 +2,384 @@
 {% load static %}
 {% block title %}Stock Market Analyzer{% endblock title %}
 {% block content %}
-  <main>
-    <div class="row">
-      <div class="content side">
-          An app developed by students to predict the stock market with high accuracy. 
-          It uses sentiment analysis to identify the effect of news on stocks. <br>
-          Made using Django, ChartJS, Scapy, ML and <i class="fa-regular fa-heart base-icon fa-lg"></i>
-          <h2>Stock Market Analyzer</h2>
+  <section id="intro" class="clearfix">
+    <div class="container">
+      <div class="intro-img">
+        <img src="{% static 'img/intro-img.svg' %}" alt="" class="img-fluid ">
       </div>
-      <div class="content side">
-        <canvas id="myChart"></canvas>
+      <div class="intro-info">
+        <h2>Accurate<br><span>analytics</span><br>live from the stock exchange!</h2>
+        <div>
+          <a href="#about" class="btn-get-started scrollto">Know more</a>
+          <a href="/login" class="btn-services scrollto">Login</a>
+        </div>
       </div>
     </div>
+  </section>
+
+  <main id="main">
+    <section id="about">
+      <div class="container">
+        <header class="section-header">
+          <h3>About Us</h3>
+          <p>We are passionate about solving complex problems and creating innovative solutions, and are constantly exploring new ideas and pushing the boundaries of what is possible.</p>
+        </header>
+        <div class="row about-container">
+          <div class="col-lg-6 content order-lg-1 order-2">
+            <p>
+              Are you tired of constantly tracking the stock market and trying to make sense of all the information? Well, we have the solution for you! Our stock market prediction app uses advanced algorithms and machine learning to provide you with accurate and up-to-date predictions on the stock market.
+            </p>
+            <div class="icon-box wow fadeInUp">
+              <div class="icon"><i class="fa fa-bolt"></i></div>
+              <h4 class="title"><a href="">Fast Speed</a></h4>
+              <p class="description">Our fast processing AI uses state of the art optimization to give quick predictions to live news.</p>
+            </div>
+            <div class="icon-box wow fadeInUp" data-wow-delay="0.2s">
+              <div class="icon"><i class="fa fa-crosshairs"></i></div>
+              <h4 class="title"><a href="">High Accuracy</a></h4>
+              <p class="description">Using a comprehensive dataset we have managed to achieve accuracies of upto 65%.</p>
+            </div>
+            <div class="icon-box wow fadeInUp" data-wow-delay="0.4s">
+              <div class="icon"><i class="fa fa-rupee"></i></div>
+              <h4 class="title"><a href="">Free Services</a></h4>
+              <p class="description">We aim to provide these amazing servies to all users, free of cost.</p>
+            </div>
+          </div>
+          <div class="col-lg-6 background order-lg-2 order-1 wow fadeInUp">
+            <img src="{% static 'img/about-img.svg' %}" class="img-fluid" alt="">
+          </div>
+        </div>
+        <div class="row about-extra">
+          <div class="col-lg-6 wow fadeInUp">
+            <img src="{% static 'img/about-extra-1.svg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 wow fadeInUp pt-5 pt-lg-0">
+            <h4>The Stock Market</h4>
+            <p>
+              The prices of individual stocks are constantly fluctuating, reflecting changes in market sentiment and investor expectations. Understanding the stock market requires a combination of financial knowledge, analytical skills, and a willingness to take calculated risks. While the stock market can be volatile and unpredictable, it also offers the potential for significant rewards for those who are willing to invest wisely.
+            </p>
+          </div>
+        </div>
+        <div class="row about-extra">
+          <div class="col-lg-6 wow fadeInUp order-1 order-lg-2">
+            <img src="{% static 'img/about-extra-2.svg' %}" class="img-fluid" alt="">
+          </div>
+          <div class="col-lg-6 wow fadeInUp pt-4 pt-lg-0 order-2 order-lg-1">
+            <h4>Stock Market Analyzer</h4>
+            <p>
+              Our app is designed with the user in mind, providing a simple and intuitive interface that allows you to quickly and easily access the information you need. Our predictive algorithms analyze a wide range of data, including historical trends, company performance, and market news, to provide you with reliable and accurate predictions on stock prices.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- <section id="downloads" class="section-bg">
+      <div class="container">
+        <header class="section-header">
+          <h3>Downloads</h3>
+          <p>We provide various services across many platforms.</p>
+        </header>
+        <div class="row">
+          <div class="col-md-6 col-lg-5 offset-lg-1 wow bounceInUp" data-wow-duration="1.4s">
+            <div class="box">
+              <div class="icon"><i class="ion-social-chrome" style="color: #ff689b;"></i></div>
+              <h4 class="title"><a href="">Web Extension</a></h4>
+              <p class="description">Get our application for all devices with a chrome browser. Can also be installed on chromebooks and smart televisions.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg-5 wow bounceInUp" data-wow-duration="1.4s">
+            <div class="box">
+              <div class="icon"><i class="ion-social-android" style="color: #e9bf06;"></i></div>
+              <h4 class="title"><a href="">Android Application</a></h4>
+              <p class="description">Get our internet protection on the fly. Install it on any android device with an internet connection.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> -->
+
+    <section id="why-us" class="wow fadeIn">
+      <div class="container">
+        <header class="section-header">
+          <h3>Features</h3>
+          <p></p>
+        </header>
+        <div class="row row-eq-height justify-content-center">
+          <div class="col-lg-4 mb-4">
+            <div class="card wow bounceInUp">
+                <i class="fa fa-plane"></i>
+              <div class="card-body">
+                <h5 class="card-title">Portable App</h5>
+                <p class="card-text">You can use our app on the fly anytime, anywhere.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 mb-4">
+            <div class="card wow bounceInUp">
+                <i class="fa fa-globe"></i>
+              <div class="card-body">
+                <h5 class="card-title">Universal Accessibility</h5>
+                <p class="card-text">Easy to understand and use by anyone across the world.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 mb-4">
+            <div class="card wow bounceInUp">
+                <i class="fa fa-line-chart"></i>
+              <div class="card-body">
+                <h5 class="card-title">Personalized Dash</h5>
+                <p class="card-text">Your dashboard is personalized for you and your requirements. </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row counters">
+          <div class="col-lg-3 col-6 text-center">
+            <span data-toggle="counter-up"></span>
+            <p>Stocks</p>
+          </div>
+          <div class="col-lg-3 col-6 text-center">
+            <span data-toggle="counter-up">News Articles</span>
+            <p>Hours of work saved</p>
+          </div>
+          <div class="col-lg-3 col-6 text-center">
+            <span data-toggle="counter-up"></span>
+            <p>Data Parsed</p>
+          </div>
+          <div class="col-lg-3 col-6 text-center">
+            <span data-toggle="counter-up">{{users}}</span>
+            <p>Total Users</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="team">
+      <div class="container">
+        <div class="section-header">
+          <h3>Team</h3>
+          <p>Our team of multi talented engineers.</p>
+        </div>
+
+        <div class="row">
+
+          <div class="col-lg-6 col-md-6 wow fadeInUp">
+            <div class="member">
+              <img src="{% static 'img/shubham.png'%}" class="img-fluid profile-image" alt="">
+              <div class="member-info">
+                <div class="member-info-content">
+                  <h4>Shubham Ojha</h4>
+                  <span>Chief Executive Officer</span>
+                  <div class="social">
+                    <a href="https://github.com/shubhamojha1"><i class="fa fa-github"></i></a>
+                    <a href=""><i class="fa fa-link"></i></a>
+                    <a href=""><i class="fa fa-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+            <div class="member">
+              <img src="{% static 'img/glennm.jpg'%}" class="img-fluid profile-image" alt="">
+              <div class="member-info">
+                <div class="member-info-content">
+                  <h4>Glenn Mendonca</h4>
+                  <span>Chief Technical Officer</span>
+                  <div class="social">
+                    <a href="https://github.com/Glenn-Mendonca"><i class="fa fa-github"></i></a>
+                    <a href="https://glenn-mendonca.github.io/"><i class="fa fa-link"></i></a>
+                    <a href=""><i class="fa fa-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+            <div class="member">
+              <img src="{% static 'img/glenr.png'%}" class="img-fluid profile-image" alt="">
+              <div class="member-info">
+                <div class="member-info-content">
+                  <h4>Glen Rodrigues</h4>
+                  <span>Chief Operations Officer</span>
+                  <div class="social">
+                    <a href="https://github.com/GlenR16"><i class="fa fa-github"></i></a>
+                    <a href=""><i class="fa fa-link"></i></a>
+                    <a href=""><i class="fa fa-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-6 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
+            <div class="member">
+              <img src="{% static 'img/harsh.png'%}" class="img-fluid profile-image" alt="">
+              <div class="member-info">
+                <div class="member-info-content">
+                  <h4>Divyansh Dalmia</h4>
+                  <span>Engineer</span>
+                  <div class="social">
+                    <a href="https://github.com/PoojaBanjan24"><i class="fa fa-github"></i></a>
+                    <a href=""><i class="fa fa-link"></i></a>
+                    <a href=""><i class="fa fa-linkedin"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- #team -->
+
+    <!--==========================
+      Clients Section
+    ============================-->
+    {% comment %} <section id="clients" class="section-bg">
+
+      <div class="container">
+
+        <div class="section-header">
+          <h3>Our Clients</h3>
+          <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque dere santome nida.</p>
+        </div>
+
+        <div class="row no-gutters clients-wrap clearfix wow fadeInUp">
+
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-1.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-2.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+        
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-3.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-4.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-5.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+        
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-6.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-7.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+          
+          <div class="col-lg-3 col-md-4 col-xs-6">
+            <div class="client-logo">
+              <img src="{% static 'img/clients/client-8.png'%}" class="img-fluid" alt="">
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </section> {% endcomment %}
+
+    <!--==========================
+      Contact Section
+    ============================-->
+    <section id="contact">
+      <div class="container-fluid">
+
+        <div class="section-header">
+          <h3>Contact Us</h3>
+        </div>
+
+        <div class="row wow fadeInUp">
+
+          <div class="col-lg-6">
+            <div class="map mb-4 mb-lg-0">
+              <div class="mapouter"><div class="gmap_canvas"><iframe width="90%" height="350" id="gmap_canvas" src="https://maps.google.com/maps?q=Fr. Conceicao Rodrigues College of Engineering&t=&z=10&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><br><style>.mapouter{position:relative;text-align:right;height:100%;width:100%;}</style><style>.gmap_canvas {overflow:hidden;background:none!important;height:100%;width:100%;}</style></div></div>
+            </div>
+          </div>
+
+          <div class="col-lg-6">
+            <div class="row">
+              <div class="col-md-5 info">
+                <i class="ion-ios-location-outline"></i>
+                <p>Fr.Conceicao Rodrigues College of Engineering</p>
+              </div>
+              <div class="col-md-4 info">
+                <i class="ion-ios-email-outline"></i>
+                <p>info@example.com</p>
+              </div>
+              <div class="col-md-3 info">
+                <i class="ion-ios-telephone-outline"></i>
+                <p>+91 1234567890</p>
+              </div>
+            </div>
+
+            <div class="form">
+              <div id="sendmessage">Your message has been sent. Thank you!</div>
+              <div id="errormessage"></div>
+              <form action="" method="post" role="form" class="contactForm">
+                {% csrf_token %}
+                <div class="form-row">
+                  <div class="form-group col-lg-6">
+                    <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                    <div class="validation"></div>
+                  </div>
+                  <div class="form-group col-lg-6">
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+                    <div class="validation"></div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" data-rule="minlen:4" data-msg="Please enter at least 8 chars of subject" />
+                  <div class="validation"></div>
+                </div>
+                <div class="form-group">
+                  <textarea class="form-control" name="message" rows="5" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
+                  <div class="validation"></div>
+                </div>
+                <div class="text-center"><button type="submit" title="Send Message">Send Message</button></div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- #contact -->
+
   </main>
+  {% if success == True %}
+  <script>
+    alert("Submitted Successfully!");
+  </script>
+  {% elif success == False %}
+  <script>
+    alert("Incorrect Data Submitted");
+  </script>
+  {% endif %}
 {% endblock content %}

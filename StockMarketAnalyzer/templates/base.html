@@ -1,37 +1,91 @@
-{%load static%}
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{%static '/css/base.css' %}">
-    <script src="https://kit.fontawesome.com/853e6dc438.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.js" integrity="sha512-d6nObkPJgV791iTGuBoVC9Aa2iecqzJRE0Jiqvk85BhLHAPhWqkuBiQb1xz2jvuHNqHLYoN3ymPfpiB1o+Zgpw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
-    <title>{% block title %}{% endblock title %}</title>
-</head>
-<body class="">
-  <nav>
-    <a href="">
-      <img src="{% static 'transparent.png' %}" alt="Stock Market Analyzer">
-    </a>
-    <div class="nav-btns">
-        <a href="/aboutus/" class="nav-links">About Us</a>
-        {% if request.user.is_authenticated %}
-            <a href="/dashboard/" class="nav-links">Dashboard</a>
-            <a href="/logout/" class="nav-links">Logout</a>
-        {% else %}
-            <a href="/login/" class="nav-links">Login</a>
-            <a href="/signup/" class="nav-links">Signup</a>
-        {% endif %}
-        <button><i class="fa-solid fa-bars"></i></button>
-    </div>
+  <meta charset="utf-8">
+  <title>{% block title %}{% endblock title %}</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
 
-  </nav>
+  <!-- Favicons -->
+  <link href="{% static 'img/favicon.svg' %}" rel="icon">
+  <link href="{% static 'img/favicon.svg' %}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
+
+  <!-- Bootstrap CSS File -->
+  <link href="{% static 'lib/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Libraries CSS Files -->
+  <link href="{% static 'lib/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/animate/animate.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/ionicons/css/ionicons.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+
+  <!-- Main Stylesheet File -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+  {% block css %}
+  {% endblock css %}
+</head>
+
+<body>
+  <header id="header" class="sticky-top">
+    <div class="container">
+      <div class="logo float-left">
+        <h1 class="text-light"><a href="../../"><span>SMA</span></a></h1> 
+      </div>
+      <nav class="main-nav float-right d-none d-lg-block">
+        <ul>
+          {% if "dashboard" in request.path %}
+          <li><a href="../../">Home</a></li>
+          {% else %}
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#team">Team</a></li>
+          <li><a href="#contact">Contact Us</a></li>
+          {% endif %}
+          {% if request.user.is_authenticated %}
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/logout/"><i class="fa fa-sign-out fa-lg"></i></a></li>
+          {% else %}
+          <li><a href="/login">Login</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
   {% block content %}
   {% endblock content %}
+  
+  <footer id="footer">
+    <div class="footer-top">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 footer-info text-center">
+            <h3>Stock Market Analyzer</h3>
+            <p>Thank you for visiting our website.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <a href="#" class="back-to-top"><i class="fa fa-chevron-up"></i></a>
+  <!-- <script src="{% static 'lib/jquery/jquery-migrate.min.js'%}"></script> -->
+  <script src="{% static 'lib/jquery/jquery.min.js'%}"></script>
+  <script src="{% static 'lib/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+  <script src="{% static 'lib/easing/easing.min.js'%}"></script>
+  <script src="{% static 'lib/mobile-nav/mobile-nav.js'%}"></script>
+  <script src="{% static 'lib/wow/wow.min.js'%}"></script>
+  <script src="{% static 'lib/waypoints/waypoints.min.js'%}"></script>
+  <script src="{% static 'lib/counterup/counterup.min.js'%}"></script>
+  <script src="{% static 'lib/owlcarousel/owl.carousel.min.js'%}"></script>
+  <script src="{% static 'lib/isotope/isotope.pkgd.min.js'%}"></script>
+  <script src="{% static 'lib/lightbox/js/lightbox.min.js'%}"></script>
+  <script src="{% static 'js/main.js'%}"></script>
+  {% block script %}
+  {% endblock script %}
 </body>
-<script src="{%static '/js/jquery.min.js' %}"></script>
-<script src="{%static '/js/base.js' %}"></script>
 </html>

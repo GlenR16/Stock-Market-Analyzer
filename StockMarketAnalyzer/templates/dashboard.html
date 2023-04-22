@@ -1,38 +1,56 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-Dashboard
+Dev Dashboard
 {% endblock title %}
 {% block content %}
-<main>
-        <div class="heading">Graph</div>
-        <div class="content">
-            {% comment %} <form id="form2" action="./" method="post">
-                {% csrf_token %}
-                <select  list="stocks" name="stockid" id="stocksearch" onchange="this.form.submit()">
-                    {% for stock in list %}
-                    <option value="{{stock.sid}}" {% if stock.sid == user.stock.sid %}selected{% endif %}>{{stock.name}}</option>
-                    {% endfor %}
-                </select>
-            </form> {% endcomment %}
-            <div style="display: flex;justify-content:center ;">
-                {{chart | safe}}
+<main id="main" class="mt-5">
+    <section id="dashboard">
+        <div class="container">
+            <h1 class="text-center">
+                {{request.user.name}} <br>
+            </h1>
+            <div id="searchBox">
+                <input type="text" name="search" id="search" class="form-control m-0" placeholder="Search Stocks" onblur="this.value='';" onkeypress="search(this.value);">
+                <div class="m-0 p-0 text-center" id="liveSearch">
+                    
+                </div>
             </div>
         </div>
-    </main>
-    <main>
-        <div class="heading">News</div>
-        <div class="content">
-            {% if news %}
-            {% for new in news %}
-            <div class="news">
-                <h2>{{new.headline}}</h2>
-                {{new.news}} <br>
-            </div>
-            {% endfor %}
-            {% else %}
-            <h2  style="text-align: center;color: red;font-weight: 800;font-size: 25px;">No News so far.</h2>
-            {% endif %}
-        </div>
-    </main>
+    </section>
+</main>
+<section id="charts-data" class="container mt-3">
+    <div class="d-flex flex-column">
+        {% for i in charts %}
+            {{ i | safe }}
+        {% endfor %}
+    </div>
+</section>
+<script>
+    let domparse = new DOMParser();
+    function search(stock){
+        fetch("/search?q="+stock)
+        .then((res)=> res.json())
+        .then((data) => {
+            document.getElementById("liveSearch").innerHTML = "";
+            data.forEach(stock => {
+                document.getElementById("liveSearch").innerHTML  += `<div class="m-2 p-0 d-flex flex-row align-items-center">
+                        <p class="m-0 p-0">${stock.name}</p> 
+                        <button type="button" id="${stock.sid}" onclick="addStock(this.id);" class="btn btn-sm btn-outline-success mx-2">+</button></div>`;
+            });
+            
+        })
+        .catch((error) => console.log(error))
+    }
+    function addStock(id){
+        fetch("/addStock/"+id+"/")
+        .then((res) => res.json())
+        .then((data) => {
+            location.reload();
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+</script>
 {% endblock content %}
