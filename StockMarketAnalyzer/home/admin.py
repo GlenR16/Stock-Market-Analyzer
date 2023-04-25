@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User,Stock,New,Data
+from .models import User,Stock,New,Data,Output
 
 # Register your models here.
 
@@ -19,4 +19,9 @@ class UserAdmin(admin.ModelAdmin):
 @admin.register(Data)
 class DataAdmin(admin.ModelAdmin):
     list_display = ("stock","date","open","close","high","low","volume")
+    list_filter = ("stock",)
+
+@admin.register(Output)
+class OutputAdmin(admin.ModelAdmin):
+    list_display = ("stock","date")
     list_filter = ("stock",)

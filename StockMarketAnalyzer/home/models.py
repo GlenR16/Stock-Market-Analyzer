@@ -24,7 +24,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ["name"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
 class New(models.Model):
@@ -36,7 +36,7 @@ class New(models.Model):
     date = models.DateField()
     
     def __str__(self) -> str:
-        return f"{self.date}"
+        return f"{self.date} - {self.stock.name}"
     
 class Data(models.Model):
     date = models.DateField()
@@ -47,9 +47,15 @@ class Data(models.Model):
     low = models.FloatField(default=0,blank=True,null=True)
     volume = models.FloatField(default=0,blank=True,null=True)
 
+    def __str__(self) -> str:
+        return f"{self.date} - {self.stock.name}"
+
 
 class Output(models.Model):
     date = models.DateField(auto_now_add=True)
     stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
     sentiment_model = ArrayField(models.FloatField(blank=True,null=True),size=5)
     historical_model = ArrayField(models.FloatField(blank=True,null=True),size=5)
+
+    def __str__(self) -> str:
+        return f"{self.date} - {self.stock.name}"

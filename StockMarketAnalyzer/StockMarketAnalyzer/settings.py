@@ -113,7 +113,26 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+
 # Setting loggers to CRITICAL only.
+logging.getLogger("schedule").setLevel(logging.CRITICAL)
+logging.getLogger("schedule").propagate = False
+logging.getLogger("concurrent.futures").setLevel(logging.CRITICAL)
+logging.getLogger("concurrent.futures").propagate = False
+logging.getLogger("concurrent").setLevel(logging.CRITICAL)
+logging.getLogger("concurrent").propagate = False
+logging.getLogger("asyncio").setLevel(logging.CRITICAL)
+logging.getLogger("asyncio").propagate = False
+logging.getLogger("django.dispatch").setLevel(logging.CRITICAL)
+logging.getLogger("django.dispatch").propagate = False
+logging.getLogger("django").setLevel(logging.CRITICAL)
+logging.getLogger("django").propagate = False
+logging.getLogger("django.utils.autoreload").setLevel(logging.CRITICAL)
+logging.getLogger("django.utils.autoreload").propagate = False
+logging.getLogger("django.utils").setLevel(logging.CRITICAL)
+logging.getLogger("django.utils").propagate = False
+logging.getLogger("django.template").setLevel(logging.CRITICAL)
+logging.getLogger("django.template").propagate = False
 logging.getLogger("urllib3").setLevel(logging.CRITICAL)
 logging.getLogger("urllib3").propagate = False
 logging.getLogger("scrapy").setLevel(logging.CRITICAL)
@@ -122,6 +141,113 @@ logging.getLogger("filelock").setLevel(logging.CRITICAL)
 logging.getLogger("filelock").propagate = False
 logging.getLogger("tensorflow").setLevel(logging.CRITICAL)
 logging.getLogger("tensorflow").propagate = False
+logging.getLogger("ta").setLevel(logging.CRITICAL)
+logging.getLogger("ta").propagate = False
+logging.getLogger("django.db.models").setLevel(logging.CRITICAL)
+logging.getLogger("django.db.models").propagate = False
+logging.getLogger("django.db").setLevel(logging.CRITICAL)
+logging.getLogger("django.db").propagate = False
+logging.getLogger("django.db.backends").setLevel(logging.CRITICAL)
+logging.getLogger("django.db.backends").propagate = False
+logging.getLogger("django.request").setLevel(logging.CRITICAL)
+logging.getLogger("django.request").propagate = False
+logging.getLogger("django.server").setLevel(logging.CRITICAL)
+logging.getLogger("django.server").propagate = False
+logging.getLogger("django.security.csrf").setLevel(logging.CRITICAL)
+logging.getLogger("django.security.csrf").propagate = False
+logging.getLogger("django.security").setLevel(logging.CRITICAL)
+logging.getLogger("django.security").propagate = False
+logging.getLogger("django_cron").setLevel(logging.CRITICAL)
+logging.getLogger("django_cron").propagate = False
+logging.getLogger("django.db.backends.schema").setLevel(logging.CRITICAL)
+logging.getLogger("django.db.backends.schema").propagate = False
+logging.getLogger("_plotly_utils.optional_imports").setLevel(logging.CRITICAL)
+logging.getLogger("_plotly_utils.optional_imports").propagate = False
+logging.getLogger("_plotly_utils").setLevel(logging.CRITICAL)
+logging.getLogger("_plotly_utils").propagate = False
+logging.getLogger("urllib3.util.retry").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3.util.retry").propagate = False
+logging.getLogger("urllib3.util").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3.util").propagate = False
+logging.getLogger("urllib3.connection").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3.connection").propagate = False
+logging.getLogger("urllib3.response").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3.response").propagate = False
+logging.getLogger("urllib3.connectionpool").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3.connectionpool").propagate = False
+logging.getLogger("urllib3.poolmanager").setLevel(logging.CRITICAL)
+logging.getLogger("urllib3.poolmanager").propagate = False
+logging.getLogger("charset_normalizer").setLevel(logging.CRITICAL)
+logging.getLogger("charset_normalizer").propagate = False
+logging.getLogger("requests").setLevel(logging.CRITICAL)
+logging.getLogger("requests").propagate = False
+logging.getLogger("MARKDOWN").setLevel(logging.CRITICAL)
+logging.getLogger("MARKDOWN").propagate = False
+logging.getLogger("pyasn1").setLevel(logging.CRITICAL)
+logging.getLogger("pyasn1").propagate = False
+logging.getLogger("scrapy.utils.spider").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.utils.spider").propagate = False
+logging.getLogger("scrapy.utils").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.utils").propagate = False
+logging.getLogger("scrapy.utils.iterators").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.utils.iterators").propagate = False
+logging.getLogger("scrapy.spiders.sitemap").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.spiders.sitemap").propagate = False
+logging.getLogger("scrapy.spiders").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.spiders").propagate = False
+logging.getLogger("scrapy.middleware").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.middleware").propagate = False
+logging.getLogger("scrapy.utils.log").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.utils.log").propagate = False
+logging.getLogger("scrapy.core.scraper").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.core.scraper").propagate = False
+logging.getLogger("scrapy.core").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.core").propagate = False
+logging.getLogger("scrapy.core.engine").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.core.engine").propagate = False
+logging.getLogger("scrapy.utils.signal").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.utils.signal").propagate = False
+logging.getLogger("scrapy.crawler").setLevel(logging.CRITICAL)
+logging.getLogger("scrapy.crawler").propagate = False
+logging.getLogger("bs4.dammit").setLevel(logging.CRITICAL)
+logging.getLogger("bs4.dammit").propagate = False
+logging.getLogger("bs4").setLevel(logging.CRITICAL)
+logging.getLogger("bs4").propagate = False
+logging.getLogger("nltk.metrics.agreement").setLevel(logging.CRITICAL)
+logging.getLogger("nltk.metrics.agreement").propagate = False
+logging.getLogger("nltk.metrics").setLevel(logging.CRITICAL)
+logging.getLogger("nltk.metrics").propagate = False
+logging.getLogger("nltk").setLevel(logging.CRITICAL)
+logging.getLogger("nltk").propagate = False
+logging.getLogger("sklearn").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn").propagate = False
+logging.getLogger("nltk.parse.nonprojectivedependencyparser").setLevel(logging.CRITICAL)
+logging.getLogger("nltk.parse.nonprojectivedependencyparser").propagate = False
+logging.getLogger("nltk.parse").setLevel(logging.CRITICAL)
+logging.getLogger("nltk.parse").propagate = False
+logging.getLogger("sklearn.datasets._covtype").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._covtype").propagate = False
+logging.getLogger("sklearn.datasets").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets").propagate = False
+logging.getLogger("sklearn.datasets._kddcup99").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._kddcup99").propagate = False
+logging.getLogger("sklearn.datasets._lfw").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._lfw").propagate = False
+logging.getLogger("sklearn.datasets._twenty_newsgroups").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._twenty_newsgroups").propagate = False
+logging.getLogger("sklearn.datasets._species_distributions").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._species_distributions").propagate = False
+logging.getLogger("sklearn.datasets._california_housing").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._california_housing").propagate = False
+logging.getLogger("sklearn.datasets._rcv1").setLevel(logging.CRITICAL)
+logging.getLogger("sklearn.datasets._rcv1").propagate = False
+logging.getLogger("absl").setLevel(logging.CRITICAL)
+logging.getLogger("absl").propagate = False
+logging.getLogger("h5py._conv").setLevel(logging.CRITICAL)
+logging.getLogger("h5py._conv").propagate = False
+logging.getLogger("h5py").setLevel(logging.CRITICAL)
+logging.getLogger("h5py").propagate = False
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 

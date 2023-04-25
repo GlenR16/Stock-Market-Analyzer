@@ -15,6 +15,10 @@ body {
   font-family: "Open Sans", sans-serif;
 }
 
+a[href='https://plotly.com/']{
+  display: none;
+}
+
 a {
   color: #007bff;
   transition: 0.5s;

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 import re
@@ -88,10 +89,11 @@ class DashboardView(LoginRequiredMixin,TemplateView):
         context["stocks"] = Stock.objects.all()
         out = []
         for stock in self.request.user.stocks.all():
-            data = Data.objects.filter(stock__name=stock.name)
-            print(data)
+            data = Data.objects.filter(stock__name=stock.name,date__lte=datetime.now().date())
+            predictions = Data.objects.filter(stock__name=stock.name,date__gt=datetime.now().date())
             if data.count() != 0:
                 graph = px.line(x=[i.date for i in data],y=[i.open for i in data],title=stock.name,labels={'x':'Date','y':'Opening'},markers=True)
+                graph = px.line(x=[i.date for i in predictions],y=[i.open for i in predictions],title=stock.name,labels={'x':'Date','y':'Opening'},markers=True)
                 graph.update_layout(title={'font_size':22,'xanchor':'center','x':0.5})
                 out.append(graph.to_html())
         context["charts"] = out
