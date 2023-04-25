@@ -54,22 +54,22 @@ class ScrapeNews(CronJobBase):
     def getStockData(self):
         for i in Stock.objects.all():
             if Data.objects.filter(stock=i).exists():
-                self.getdata(i.code,True,Data.objects.filter(stock=i).order_by("-date").first().date)
+                self.getData(i.code,True,Data.objects.filter(stock=i).order_by("-date").first().date)
             else:
-                self.getdata(i.code,True)
+                self.getData(i.code,True)
         return True
 
     def predictNewsSentiment(self):
         for i in New.objects.filter(sentiment = None):
-            i.sentiment = self.predict_sentiment([i.news])
+            i.sentiment = self.predictTextSentiment([i.news])
             i.save()
         return False
 
     def trainSupplementModels(self):
         for i in Stock.objects.all():
             if not Output.objects.filter(stock=i,date=datetime.now().date()).exists():
-                s_p = self.predict_using_sentiment(self.get_clean_data(i.code),self.regfr,i.code)[0].tolist()
-                h_p = self.predict_using_historical(i.code).tolist()
+                s_p = self.predictUsingSentiment(self.getCleanData(i.code),self.regfr,i.code)[0].tolist()
+                h_p = self.predictUsingHistorical(i.code).tolist()
                 op = Output(stock=i,sentiment_model=s_p,historical_model=h_p)
                 op.save()
         return True
@@ -94,7 +94,7 @@ class ScrapeNews(CronJobBase):
                 writer.writerow([data.date, data.stock, data.open, data.close])
         return True
 
-    def getdata(self,code,save = True,lastDate = datetime(2016,1,1).date()):
+    def getData(self,code,save = True,lastDate = datetime(2016,1,1).date()):
         data = yf.Ticker(code)
         extractDays = np.busday_count(datetime.now().date(), lastDate)
         if lastDate == datetime(2016,1,1).date():
@@ -115,7 +115,7 @@ class ScrapeNews(CronJobBase):
                 newdata.save()
         return df
     
-    def predict_sentiment(self,text):
+    def predictTextSentiment(self,text):
         sentiment_analyser = load_model("./home/aiml/sentiment")
         max_len=500
         handle = open('./home/aiml/sentiment/tokenizer.pickle', 'rb')
@@ -130,7 +130,7 @@ class ScrapeNews(CronJobBase):
         }
         return sentiments[yt[0]]
 
-    def get_clean_data(self, stock_code):
+    def getCleanData(self, stock_code):
         sentiment_df = pd.DataFrame(list(New.objects.filter(stock__code=stock_code).order_by("date").values("date","sentiment","stock")))
         stock_df = pd.DataFrame(Data.objects.filter(stock__code=stock_code,date__gte=New.objects.filter(stock__code=stock_code).order_by("date").first().date).values("date","stock","close"))
         idx = list(range(len(stock_df)))
@@ -163,12 +163,11 @@ class ScrapeNews(CronJobBase):
         final_df['close'] = list(stock_df['close'])
         return final_df
 
-    def predict_using_sentiment(self,final_df, model,stock_code):
-
+    def predictUsingSentiment(self,final_df, model,stock_code):
         def calculate_avg(lst):
             return sum(lst) / len(lst)
-        stock_values = list(final_df['close'])
 
+        stock_values = list(final_df['close'])
         stock_values = [stock_values[i:i+self.days_in_future] for i in range(len(stock_values)-self.days_in_future)]
         sentiment_values = list(final_df['sentiment'])
         sentiment_values = [sentiment_values[i:i+self.days_in_future] for i in range(len(sentiment_values)-self.days_in_future)]
@@ -185,7 +184,7 @@ class ScrapeNews(CronJobBase):
         predict.append(todays_sentiment)
         return regfr.predict([[np.average(predict)]])
 
-    def predict_using_historical(self,stock_code):
+    def predictUsingHistorical(self,stock_code):
         historical_predictor = load_model("./home/aiml/historical")
         df= pd.DataFrame(Data.objects.filter(stock__code=stock_code).values())
         def get_technical_analysis_values(df):
