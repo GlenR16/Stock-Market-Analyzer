@@ -942,8 +942,8 @@ h6 {
 }
 
 #team .member img {
-  height: 350px;
-  width: 350px;
+  height: 500px;
+  width: 700px;
   -webkit-background-clip: padding-box;
   -moz-background-clip: padding;
   background-clip: padding-box;

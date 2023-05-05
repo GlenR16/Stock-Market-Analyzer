@@ -46,6 +46,7 @@ class Data(models.Model):
     high = models.FloatField(default=0,blank=True,null=True)
     low = models.FloatField(default=0,blank=True,null=True)
     volume = models.FloatField(default=0,blank=True,null=True)
+    type = models.CharField(max_length=10,default="ACTUAL")
 
     def __str__(self) -> str:
         return f"{self.date} - {self.stock.name}"
@@ -59,3 +60,9 @@ class Output(models.Model):
 
     def __str__(self) -> str:
         return f"{self.date} - {self.stock.name}"
+    
+class Prediction(models.Model):
+    date = models.DateField()
+    stock = models.ForeignKey(Stock, on_delete=models.CASCADE)
+    close = models.FloatField(default=0)
+    type = models.CharField(max_length=10,default="PREDICTION")

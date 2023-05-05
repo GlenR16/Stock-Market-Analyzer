@@ -4,7 +4,7 @@ from StockMarketAnalyzer.newsScrapper.spiders.moneycontrol import NewsSpider as 
 from StockMarketAnalyzer.newsScrapper.spiders.economictimes import NewsSpider as et
 from StockMarketAnalyzer.newsScrapper.spiders.livemint import LivemintSpider as lm
 import yfinance as yf
-from home.models import Data,Stock,New,Output
+from home.models import Data,Stock,New,Output,Prediction
 from datetime import timedelta,datetime,date
 import numpy as np
 from nltk.stem.porter import *
@@ -17,8 +17,11 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import RobustScaler
 import ta
+from sklearn.svm import SVR
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
 
-stopwords_list = ["i","me","my","myself","we","our","ours","ourselves","you","you're","you've","you'll","you'd","your","yours","yourself","yourselves","he","him","his","himself","she","she's","her","hers","herself","it","it's","its","itself","they","them","their","theirs","themselves","what","which","who","whom","this","that","that'll","these","those","am","is","are","was","were","be","been","being","have","has","had","having","do","does","did","doing","a","an","the","and","but","if","or","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","here","there","when","where","why","how","all","any","both","each","few","more","most","other","some","such","no","nor","not","only","own","same","so","than","too","very","s","t","can","will","just","don","don't","should","should've","now","d","ll","m","o","re","ve","y","ain","aren","aren't","couldn","couldn't","didn","didn't","doesn","doesn't","hadn","hadn't","hasn","hasn't","haven","haven't","isn","isn't","ma","mightn","mightn't","mustn","mustn't","needn","needn't","shan","shan't","shouldn","shouldn't","wasn","wasn't","weren","weren't","won","won't","wouldn","wouldn't",]
+# stopwords_list = ["i","me","my","myself","we","our","ours","ourselves","you","you're","you've","you'll","you'd","your","yours","yourself","yourselves","he","him","his","himself","she","she's","her","hers","herself","it","it's","its","itself","they","them","their","theirs","themselves","what","which","who","whom","this","that","that'll","these","those","am","is","are","was","were","be","been","being","have","has","had","having","do","does","did","doing","a","an","the","and","but","if","or","because","as","until","while","of","at","by","for","with","about","against","between","into","through","during","before","after","above","below","to","from","up","down","in","out","on","off","over","under","again","further","then","once","here","there","when","where","why","how","all","any","both","each","few","more","most","other","some","such","no","nor","not","only","own","same","so","than","too","very","s","t","can","will","just","don","don't","should","should've","now","d","ll","m","o","re","ve","y","ain","aren","aren't","couldn","couldn't","didn","didn't","doesn","doesn't","hadn","hadn't","hasn","hasn't","haven","haven't","isn","isn't","ma","mightn","mightn't","mustn","mustn't","needn","needn't","shan","shan't","shouldn","shouldn't","wasn","wasn't","weren","weren't","won","won't","wouldn","wouldn't",]
 
 
 class ScrapeNews(CronJobBase):
@@ -31,19 +34,26 @@ class ScrapeNews(CronJobBase):
     regfr = RandomForestRegressor()
 
     def do(self):
+        print("Deleting old News.")
         New.objects.all().delete()
-        print("Crawling News: ",self.crawlNews())
-        print("Getting Stock Data: ",self.getStockData())
-        print("Predicting News Sentiment: ",self.predictNewsSentiment())
-        print("Training Supplement Models: ",self.trainSupplementModels())
-        print("Training Main Model: ",self.trainMainModel())
-        print("Exporting Data: ",self.exportCSVData())
+        print("Crawling News: ")
+        self.crawlNews()
+        print("Getting Stock Data: ")
+        self.getStockData()
+        print("Predicting News Sentiment: ")
+        self.predictNewsSentiment()
+        print("Training Supplement Models: ")
+        self.trainSupplementModels()
+        print("Training Main Model: ")
+        self.trainMainModel()
+        print("Exporting Data: ")
+        self.exportCSVData()
     
     def crawlNews(self):
         process = CrawlerProcess()
         process.crawl(mc)
         process.crawl(et)
-        process.crawl(lm)
+        # process.crawl(lm)
         try:
             process.start()
         except Exception as e:
@@ -67,7 +77,7 @@ class ScrapeNews(CronJobBase):
 
     def trainSupplementModels(self):
         for i in Stock.objects.all():
-            if not Output.objects.filter(stock=i,date=datetime.now().date()).exists():
+            if not Output.objects.filter(stock=i,date=datetime.now().date()).exists() and datetime.now().isoweekday() == 7:
                 s_p = self.predictUsingSentiment(self.getCleanData(i.code),self.regfr,i.code)[0].tolist()
                 h_p = self.predictUsingHistorical(i.code).tolist()
                 op = Output(stock=i,sentiment_model=s_p,historical_model=h_p)
@@ -77,8 +87,11 @@ class ScrapeNews(CronJobBase):
     def trainMainModel(self):
         print("Predicting final stock values.")
         for i in Stock.objects.all():
-            so_p = [ i.sentiment_model for i in Output.objects.filter(stock=i).order_by("-date") ]
-            ho_p = [ i.historical_model for i in Output.objects.filter(stock=i).order_by("-date") ]
+            if not Prediction.objects.filter(date__gt=datetime.now().date()).exists():
+                s_op = [ i.sentiment_model for i in Output.objects.filter(stock=i).order_by("-date") ]
+                h_op = [ i.historical_model for i in Output.objects.filter(stock=i).order_by("-date") ]
+                a_op = [ i.get("close") for i in Data.objects.filter(stock=i).order_by('-date').values("close")[:(len(s_op)-1)*5] ]
+                [ Prediction.objects.create(stock=i,date=datetime.now().date()+timedelta(index+1),close=j) for index,j in enumerate(self.finalPrediction(h_op[1:],s_op[1:],a_op,h_op[0],s_op[0])) ] 
         return True
 
     def exportCSVData(self):
@@ -204,3 +217,18 @@ class ScrapeNews(CronJobBase):
         yhat = historical_predictor.predict(np.array(df.tail(past_len)).reshape(1, 1, past_len, n_features))
         prediction = closing_val_scaler.inverse_transform(yhat)[0]
         return prediction
+    
+    def finalPrediction(self,time_series_stored, sentiment_preds_stored, actual_values, time_series_prediction, sentiment_prediction):
+        X=np.concatenate((np.array(time_series_stored).reshape(-1, 1), np.array(sentiment_preds_stored).reshape(-1, 1)), axis=1)
+        y=actual_values
+        # X = list of lists, each sub-list having 5 day predictions of each model
+        # y = list of actual stock values
+        svr = SVR(kernel='linear', C=1.0, epsilon=0.2)
+        # trained on previously predicted values
+        # print(X, y)
+        assert len(X)==len(y)
+        svr.fit(X, y)
+        # predict on new predictions from the two models
+        X_pred = np.concatenate((np.array(time_series_prediction).reshape(-1, 1), np.array(sentiment_prediction).reshape(-1, 1)), axis=1)
+        y_pred = svr.predict(X_pred)
+        return y_pred

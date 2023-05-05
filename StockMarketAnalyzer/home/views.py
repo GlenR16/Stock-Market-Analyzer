@@ -1,8 +1,9 @@
 from datetime import datetime
+from typing import Any, Dict
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect,JsonResponse
 import re
-from .models import Data, New, Stock, User
+from .models import Data, New, Stock, User,Prediction
 import plotly.express as px
 from django.views.generic.base import TemplateView,RedirectView,View
 from .forms import UserCreationForm,UserLoginForm,PasswordChangeForm
@@ -21,6 +22,16 @@ FaviconView = RedirectView.as_view(url='/static/favicon.ico', permanent=True)
 
 class IndexView(TemplateView):
     template_name = "index.html"
+
+    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context["data"] = {
+            "stocks":Stock.objects.all().count(),
+            "news":New.objects.all().count(),
+            "data":Data.objects.all().count(),
+            "users":User.objects.all().count()
+        }
+        return context
 
 class LogoutView(RedirectView):
     permanent = True
@@ -89,11 +100,13 @@ class DashboardView(LoginRequiredMixin,TemplateView):
         context["stocks"] = Stock.objects.all()
         out = []
         for stock in self.request.user.stocks.all():
-            data = Data.objects.filter(stock__name=stock.name,date__lte=datetime.now().date())
-            predictions = Data.objects.filter(stock__name=stock.name,date__gt=datetime.now().date())
-            if data.count() != 0:
-                graph = px.line(x=[i.date for i in data],y=[i.open for i in data],title=stock.name,labels={'x':'Date','y':'Opening'},markers=True)
-                graph = px.line(x=[i.date for i in predictions],y=[i.open for i in predictions],title=stock.name,labels={'x':'Date','y':'Opening'},markers=True)
+            data = list(Data.objects.filter(stock__name=stock.name,date__lte=datetime.now().date()).values("date","close","type"))
+            predictions = list(Prediction.objects.filter(stock__name=stock.name,date__gt=datetime.now().date()).values("date","close","type"))
+            temp = data[-1]
+            temp.update({"type":"PREDICTION"})
+            dataset = data + [temp] + predictions
+            if len(data) != 0:
+                graph = px.line(dataset,x="date",y="close",title=stock.name,labels={'x':'Date','y':'Opening'},markers=True,color="type")
                 graph.update_layout(title={'font_size':22,'xanchor':'center','x':0.5})
                 out.append(graph.to_html())
         context["charts"] = out
