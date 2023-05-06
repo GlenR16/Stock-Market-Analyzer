@@ -31,6 +31,12 @@ Dev Dashboard
         {% endfor %}
     </div>
 </section>
+<section class="container mt-3">
+    <h3 class="text-center">RSS Feed News</h3>
+    <ul class="d-flex flex-column" id="news-data">
+        
+    </ul>
+</section>
 <script>
     function editStock(){
         fetch("/editStock/"+document.getElementById("searchStock").value+"/")
@@ -41,6 +47,42 @@ Dev Dashboard
         .catch((error) => {
             console.log("Invalid data sent.");
         });
+    }
+    window.onload = function getNews(){
+        fetch("/rss/")
+        .then((res) => res.json())
+        .then((data) => {
+            data.moneycontrol.forEach(news => {
+                const node = document.createElement("li");
+                const content = document.createTextNode(news.title);
+                const linker = document.createElement("a")
+                linker.href = news.link
+                linker.innerHTML = ' <i class="fa fa-external-link"></i>'
+                node.appendChild(content) 
+                node.appendChild(linker)
+                document.getElementById("news-data").appendChild(node)
+            });
+            data.indiatimes.forEach(news => {
+                const node = document.createElement("li");
+                const content = document.createTextNode(news.title);
+                const linker = document.createElement("a")
+                linker.href = news.link
+                linker.innerHTML = ' <i class="fa fa-external-link"></i>'
+                node.appendChild(content) 
+                node.appendChild(linker)
+                document.getElementById("news-data").appendChild(node)
+            });
+            data.ndtv.forEach(news => {
+                const node = document.createElement("li");
+                const content = document.createTextNode(news.title);
+                const linker = document.createElement("a")
+                linker.href = news.link
+                linker.innerHTML = ' <i class="fa fa-external-link"></i>'
+                node.appendChild(content) 
+                node.appendChild(linker)
+                document.getElementById("news-data").appendChild(node)
+            });
+        })
     }
 </script>
 {% endblock content %}

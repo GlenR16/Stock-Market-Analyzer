@@ -100,13 +100,13 @@ class DashboardView(LoginRequiredMixin,TemplateView):
         context["stocks"] = Stock.objects.all()
         out = []
         for stock in self.request.user.stocks.all():
-            data = list(Data.objects.filter(stock__name=stock.name,date__lte=datetime.now().date()).values("date","close","type"))
-            predictions = list(Prediction.objects.filter(stock__name=stock.name,date__gt=datetime.now().date()).values("date","close","type"))
-            temp = data[-1]
+            data = list(Data.objects.filter(stock__name=stock.name,date__lte=datetime.now().date()).order_by('date').values("date","close","type"))
+            predictions = list(Prediction.objects.filter(stock__name=stock.name,date__gt=datetime.now().date()).order_by('date').values("date","close","type"))
+            temp = data[-1].copy()
             temp.update({"type":"PREDICTION"})
             dataset = data + [temp] + predictions
             if len(data) != 0:
-                graph = px.line(dataset,x="date",y="close",title=stock.name,labels={'x':'Date','y':'Opening'},markers=True,color="type")
+                graph = px.line(dataset[-100:],x="date",y="close",title=stock.name,labels={'x':'Date','y':'Opening'},markers=True,color="type")
                 graph.update_layout(title={'font_size':22,'xanchor':'center','x':0.5})
                 out.append(graph.to_html())
         context["charts"] = out

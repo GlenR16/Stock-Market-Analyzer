@@ -34,26 +34,26 @@ class ScrapeNews(CronJobBase):
     regfr = RandomForestRegressor()
 
     def do(self):
-        print("Deleting old News.")
-        New.objects.all().delete()
-        print("Crawling News: ")
-        self.crawlNews()
+        # print("Deleting old News.")
+        # New.objects.all().delete()
+        # print("Crawling News: ")
+        # self.crawlNews()
         print("Getting Stock Data: ")
         self.getStockData()
-        print("Predicting News Sentiment: ")
-        self.predictNewsSentiment()
-        print("Training Supplement Models: ")
-        self.trainSupplementModels()
-        print("Training Main Model: ")
-        self.trainMainModel()
-        print("Exporting Data: ")
-        self.exportCSVData()
+        # print("Predicting News Sentiment: ")
+        # self.predictNewsSentiment()
+        # print("Training Supplement Models: ")
+        # self.trainSupplementModels()
+        # print("Training Main Model: ")
+        # self.trainMainModel()
+        # print("Exporting Data: ")
+        # self.exportCSVData()
     
     def crawlNews(self):
         process = CrawlerProcess()
         process.crawl(mc)
         process.crawl(et)
-        # process.crawl(lm)
+        process.crawl(lm)
         try:
             process.start()
         except Exception as e:
@@ -85,7 +85,6 @@ class ScrapeNews(CronJobBase):
         return True
 
     def trainMainModel(self):
-        print("Predicting final stock values.")
         for i in Stock.objects.all():
             if not Prediction.objects.filter(date__gt=datetime.now().date()).exists():
                 s_op = [ i.sentiment_model for i in Output.objects.filter(stock=i).order_by("-date") ]
@@ -109,11 +108,11 @@ class ScrapeNews(CronJobBase):
 
     def getData(self,code,save = True,lastDate = datetime(2016,1,1).date()):
         data = yf.Ticker(code)
-        extractDays = np.busday_count(datetime.now().date(), lastDate)
+        extractDays = np.busday_count(lastDate,datetime.now().date())
         if lastDate == datetime(2016,1,1).date():
             df = data.history(period='5y')
         elif extractDays > 0:
-            df = data.history(period= f"{extractDays}d")
+            df = data.history(period= f"{extractDays}d",tickmode="auto")
         else:
             return None
         cols = list(df.columns)

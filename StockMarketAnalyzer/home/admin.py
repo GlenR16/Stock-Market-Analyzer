@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User,Stock,New,Data,Output
+from .models import User,Stock,New,Data,Output,Prediction
 
 # Register your models here.
 
@@ -24,4 +24,9 @@ class DataAdmin(admin.ModelAdmin):
 @admin.register(Output)
 class OutputAdmin(admin.ModelAdmin):
     list_display = ("stock","date")
+    list_filter = ("stock",)
+
+@admin.register(Prediction)
+class PredictionAdmin(admin.ModelAdmin):
+    list_display = ("stock","date","close")
     list_filter = ("stock",)

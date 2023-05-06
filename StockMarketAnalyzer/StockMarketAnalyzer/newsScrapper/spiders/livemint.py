@@ -63,7 +63,7 @@ class LivemintSpider(scrapy.Spider):
                 "div > .headlineSec > span> span::attr(data-updatedtime)"
             ).extract_first()
             datetime_obj = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
-            if (datetime.now() - datetime_obj).days > 180:
+            if (datetime.now() - datetime_obj).days > 100:
                 reached_end = True
             yield scrapy.Request(
                 link,
