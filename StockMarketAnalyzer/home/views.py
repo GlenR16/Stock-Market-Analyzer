@@ -99,6 +99,9 @@ class DashboardView(LoginRequiredMixin,TemplateView):
         context = super().get_context_data(**kwargs)
         context["stocks"] = Stock.objects.all()
         out = []
+        mc_rss = feedparser.parse("https://www.moneycontrol.com/rss/latestnews.xml")
+        it_rss = feedparser.parse("https://cfo.economictimes.indiatimes.com/rss/topstories")
+        ndtv_rss = feedparser.parse("https://feeds.feedburner.com/ndtvnews-latest")
         for stock in self.request.user.stocks.all():
             data = list(Data.objects.filter(stock__name=stock.name,date__lte=datetime.now().date()).order_by('date').values("date","close","type"))
             predictions = list(Prediction.objects.filter(stock__name=stock.name,date__gt=datetime.now().date()).order_by('date').values("date","close","type"))
@@ -110,7 +113,16 @@ class DashboardView(LoginRequiredMixin,TemplateView):
                 graph.update_layout(title={'font_size':22,'xanchor':'center','x':0.5})
                 out.append(graph.to_html())
         context["charts"] = out
+        context["news"] = mc_rss.entries + it_rss.entries + ndtv_rss.entries
         return context
+    
+    def post(self,request , *args, **kwargs):
+        stock = get_object_or_404(Stock,sid=request.POST.get("stockid",""))
+        if stock in request.user.stocks.all():
+            request.user.stocks.remove(stock)
+        else:
+            request.user.stocks.add(stock)
+        return self.get(request)
 
 class RssView(View):
     
@@ -122,14 +134,3 @@ class RssView(View):
 
 class AboutUsView(TemplateView):
     template_name = "aboutus.html"
-
-class EditStockView(APIView):
-
-    def get(self,request , *args, **kwargs):
-        stock = get_object_or_404(Stock,sid=kwargs.get("id",""))
-        if stock in request.user.stocks.all():
-            request.user.stocks.remove(stock)
-            return Response({"success":True})
-        else:
-            request.user.stocks.add(stock)
-            return Response({"success":True})

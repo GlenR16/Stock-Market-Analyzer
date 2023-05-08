@@ -6,83 +6,55 @@ Dev Dashboard
 {% block content %}
 <main id="main" class="mt-5">
     <section id="dashboard">
-        <div class="container">
+        <div class="container-fluid p-5">
             <h1 class="text-center">
                 {{request.user.name}} <br>
             </h1>
-            <div class="input-group mb-3">
+            <form class="input-group mb-3" method="post" action="">
+                {% csrf_token %}
                 <div class="input-group-prepend">
-                  <button class="btn btn-outline-info" type="button" onclick="editStock();">Add/Remove</button>
+                    <button class="btn btn-outline-info" type="submit">Add/Remove</button>
                 </div>
-                <select class="custom-select" id="searchStock">
+                <select name="stockid" class="custom-select" id="searchStock">
                     <option selected hidden disabled value="null">Add/Remove Stock</option>
                     {% for i in stocks %}
                         <option value="{{i.sid}}">{{i.name}}</option>
                     {% endfor %}
                 </select>
-            </div>
+            </form>
         </div>
     </section>
 </main>
-<section id="charts-data" class="container mt-3">
+<section id="charts-data" class="container-fluid  px-5">
     <div class="d-flex flex-column">
         {% for i in charts %}
-            {{ i | safe }}
+            <div class="ichart">
+                {{ i | safe }}
+            </div>
         {% endfor %}
     </div>
 </section>
-<section class="container mt-3">
+
+<section class="container-fluid  px-5 mb-3">
     <h3 class="text-center">RSS Feed News</h3>
-    <ul class="d-flex flex-column" id="news-data">
-        
-    </ul>
+    <div id="accordion">
+        {% for i in news %}
+            <div class="card rounded-0">
+            <div class="card-header" id="headingOne">
+                <h4 class="mb-0">
+                    <button class="btn w-100 dropdown-toggle" data-toggle="collapse" data-target="#collapse{{forloop.counter}}" aria-expanded="true" aria-controls="collapse{{forloop.counter}}">
+                        {{i.title | safe }}
+                    </button>
+                </h4>
+            </div>
+            <div id="collapse{{forloop.counter}}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body d-flex flex-row justify-content-between">
+                    <a href="{{i.link}}"><h6 class="mb-0">Read full article here.</h6></a>
+                    <h6 class="mb-0">- {{i.published}}</h6 class="mb-0">
+                </div>
+            </div>
+            </div>
+        {% endfor %}
+    </div>
 </section>
-<script>
-    function editStock(){
-        fetch("/editStock/"+document.getElementById("searchStock").value+"/")
-        .then((res) => res.json())
-        .then((data) => {
-            location.reload();
-        })
-        .catch((error) => {
-            console.log("Invalid data sent.");
-        });
-    }
-    window.onload = function getNews(){
-        fetch("/rss/")
-        .then((res) => res.json())
-        .then((data) => {
-            data.moneycontrol.forEach(news => {
-                const node = document.createElement("li");
-                const content = document.createTextNode(news.title);
-                const linker = document.createElement("a")
-                linker.href = news.link
-                linker.innerHTML = ' <i class="fa fa-external-link"></i>'
-                node.appendChild(content) 
-                node.appendChild(linker)
-                document.getElementById("news-data").appendChild(node)
-            });
-            data.indiatimes.forEach(news => {
-                const node = document.createElement("li");
-                const content = document.createTextNode(news.title);
-                const linker = document.createElement("a")
-                linker.href = news.link
-                linker.innerHTML = ' <i class="fa fa-external-link"></i>'
-                node.appendChild(content) 
-                node.appendChild(linker)
-                document.getElementById("news-data").appendChild(node)
-            });
-            data.ndtv.forEach(news => {
-                const node = document.createElement("li");
-                const content = document.createTextNode(news.title);
-                const linker = document.createElement("a")
-                linker.href = news.link
-                linker.innerHTML = ' <i class="fa fa-external-link"></i>'
-                node.appendChild(content) 
-                node.appendChild(linker)
-                document.getElementById("news-data").appendChild(node)
-            });
-        })
-    }
-</script>
 {% endblock content %}

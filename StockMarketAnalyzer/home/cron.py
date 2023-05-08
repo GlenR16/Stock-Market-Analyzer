@@ -34,20 +34,20 @@ class ScrapeNews(CronJobBase):
     regfr = RandomForestRegressor()
 
     def do(self):
-        # print("Deleting old News.")
-        # New.objects.all().delete()
-        # print("Crawling News: ")
-        # self.crawlNews()
+        print("Deleting old News.")
+        New.objects.all().delete()
+        print("Crawling News: ")
+        self.crawlNews()
         print("Getting Stock Data: ")
         self.getStockData()
-        # print("Predicting News Sentiment: ")
-        # self.predictNewsSentiment()
-        # print("Training Supplement Models: ")
-        # self.trainSupplementModels()
-        # print("Training Main Model: ")
-        # self.trainMainModel()
-        # print("Exporting Data: ")
-        # self.exportCSVData()
+        print("Predicting News Sentiment: ")
+        self.predictNewsSentiment()
+        print("Training Supplement Models: ")
+        self.trainSupplementModels()
+        print("Training Main Model: ")
+        self.trainMainModel()
+        print("Exporting Data: ")
+        self.exportCSVData()
     
     def crawlNews(self):
         process = CrawlerProcess()
@@ -200,7 +200,7 @@ class ScrapeNews(CronJobBase):
         historical_predictor = load_model("./home/aiml/historical")
         df= pd.DataFrame(Data.objects.filter(stock__code=stock_code).values())
         def get_technical_analysis_values(df):
-            df = ta.add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
+            df = ta.s(df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
             df.drop(['open', 'high', 'low', 'volume'], axis=1, inplace=True)
             return df
         df = get_technical_analysis_values(df)
