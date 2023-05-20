@@ -9,17 +9,21 @@ pip install -r requirements.txt \
 cd ./StockMarketAnalyzer \
 python manage.py runserver 0.0.0.0:80
 
-The database is on my computer only so it won't connect on your computer. \
-\
-**Fork Repo, then modify, then send merge request. Gitignore the environment folder. Do not upload environment, only update the requirements.txt file.**\
-\
-Admin User: **glenr** \
-Admin Password: **password123** \
-\
-New: \
-Added stock name to each moneycontrol scrape. \
+## Summary
+This is a full stack machine learning project that uses Django Framework in its core architecture. It is a server based project that allows users to signup for our services. We scrape the internet for news pertaining to all stocks and run sentiment analysis on the news articles. This sentiment along with the past stock data is used to predict the change in the stock. We are obtaining accuracies of upto 70% on a few stocks. This project uses a data centric architecture with a complex data pipelining cron in the backend. \
+Technologies used:
+<ul>
+  <li>Django</li>
+  <li>HTML CSS JS Jquery Bootstrap Plotly</li>
+  <li>Tensorflow Keras</li>
+  <li>Scrapy BeautifulSoup4</li>
+</ul>
 
-Work Remaining: \
-1.Add stock name to economic times scrape. \
-2.Get historic data on stocks. Update db schemas. \
-3.Add machine learning into the project. \
+
+## Team Members
+<ul>
+  <li>Shubham Ojha</li>
+  <li>Glenn Mendonca</li>
+  <li>Glen Rodrigues</li>
+  <li>Divyansh Dalmia</li>
+</ul>
