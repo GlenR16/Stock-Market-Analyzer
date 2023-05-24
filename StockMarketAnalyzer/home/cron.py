@@ -48,6 +48,7 @@ class ScrapeNews(CronJobBase):
         self.trainMainModel()
         print("Exporting Data: ")
         self.exportCSVData()
+
     
     def crawlNews(self):
         process = CrawlerProcess()
@@ -89,7 +90,12 @@ class ScrapeNews(CronJobBase):
             if not Prediction.objects.filter(date__gt=datetime.now().date()).exists():
                 s_op = [ i.sentiment_model for i in Output.objects.filter(stock=i).order_by("-date") ]
                 h_op = [ i.historical_model for i in Output.objects.filter(stock=i).order_by("-date") ]
-                a_op = [ i.get("close") for i in Data.objects.filter(stock=i).order_by('-date').values("close")[:(len(s_op)-1)*5] ]
+                if len(h_op) < 2:
+                    s_op += s_op
+                    h_op += h_op
+                    a_op = [ i.get("close") for i in Data.objects.filter(stock=i).order_by('-date').values("close")[:5]]
+                else:
+                    a_op = [ i.get("close") for i in Data.objects.filter(stock=i).order_by('-date').values("close")[:(len(s_op)-1)*5] ]
                 [ Prediction.objects.create(stock=i,date=datetime.now().date()+timedelta(index+1),close=j) for index,j in enumerate(self.finalPrediction(h_op[1:],s_op[1:],a_op,h_op[0],s_op[0])) ] 
         return True
 
@@ -198,15 +204,12 @@ class ScrapeNews(CronJobBase):
 
     def predictUsingHistorical(self,stock_code):
         historical_predictor = load_model("./home/aiml/historical")
-        df= pd.DataFrame(Data.objects.filter(stock__code=stock_code).values())
+        df= pd.DataFrame(Data.objects.filter(stock__code=stock_code).values("open","close","high","low","volume"))
         def get_technical_analysis_values(df):
-            df = ta.s(df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
+            df = ta.add_all_ta_features(df, open="open", high="high", low="low", close="close", volume="volume", fillna=True)
             df.drop(['open', 'high', 'low', 'volume'], axis=1, inplace=True)
             return df
         df = get_technical_analysis_values(df)
-        df = df.drop('id', axis=1)
-        df = df.drop('date', axis=1)
-        df = df.drop('stock_id', axis=1)
         past_len = 1000
         n_features = df.shape[1]
         closing_val_scaler = RobustScaler()
